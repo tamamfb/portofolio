@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "title": "Getting Started with React Hooks",
+    "excerpt": "Learn how to use React Hooks to manage state and side effects in functional components. We'll cover useState, useEffect, useContext, and build a custom hook from scratch.",
+    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
+    "category": "Tutorial",
+    "tags": ["React", "JavaScript", "Hooks"],
+    "date": "2024-03-10",
+    "author": "Your Name",
+    "readTime": "8 min read",
+    "link": "https://medium.com/your-blog/react-hooks"
+  },
+  {
+    "id": 2,
+    "title": "Tailwind CSS: The Utility-First Approach",
+    "excerpt": "Discover why Tailwind CSS has become so popular and how to leverage utility-first CSS for faster development, smaller bundle sizes, and a more consistent design system.",
+    "image": "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
+    "category": "Guide",
+    "tags": ["CSS", "Tailwind", "Web Design"],
+    "date": "2024-02-28",
+    "author": "Your Name",
+    "readTime": "10 min read",
+    "link": "https://medium.com/your-blog/tailwind-css"
+  },
+  {
+    "id": 3,
+    "title": "Building Scalable Node.js Applications",
+    "excerpt": "Best practices for building scalable and maintainable Node.js applications. Topics include layered architecture, error handling, dependency injection, and performance optimization with clustering.",
+    "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+    "category": "Best Practices",
+    "tags": ["Node.js", "Backend", "JavaScript"],
+    "date": "2024-02-15",
+    "author": "Your Name",
+    "readTime": "12 min read",
+    "link": "https://medium.com/your-blog/nodejs-scalable"
+  },
+  {
+    "id": 4,
+    "title": "TypeScript for React Developers",
+    "excerpt": "A practical guide to adopting TypeScript in your React projects. Learn how to type props, state, hooks, context, and common patterns that make refactoring safer and IDEs smarter.",
+    "image": "https://images.unsplash.com/photo-1619410283995-43d9134e7656?w=800&q=80",
+    "category": "Tutorial",
+    "tags": ["TypeScript", "React", "JavaScript"],
+    "date": "2024-01-20",
+    "author": "Your Name",
+    "readTime": "14 min read",
+    "link": "https://medium.com/your-blog/typescript-react"
+  },
+  {
+    "id": 5,
+    "title": "Optimizing Web Performance in 2024",
+    "excerpt": "A deep dive into Core Web Vitals, lazy loading, code splitting, and modern image optimization techniques that can dramatically improve your site's LCP, FID, and CLS scores.",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+    "category": "Performance",
+    "tags": ["Performance", "Web", "Optimization"],
+    "date": "2024-01-05",
+    "author": "Your Name",
+    "readTime": "11 min read",
+    "link": "https://medium.com/your-blog/web-performance-2024"
+  }
+]

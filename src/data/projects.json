@@ -1,0 +1,175 @@
+[
+  {
+    "id": 1,
+    "title": "Claw Calendar",
+    "description": "AI-assisted calendar web app — create, update, and delete events using natural language commands.",
+    "fullDescription": "Developed an AI-assisted calendar web application using Next.js 16, React 19, TypeScript, and FullCalendar for interactive schedule management. Built RESTful event management APIs (CRUD) with Prisma and PostgreSQL, including date-range filtering and validation. Implemented a streaming AI chat workflow via OpenAI SDK with Ollama backend, enabling automatic CREATE, UPDATE, and DELETE event actions from natural-language commands.",
+    "imageFolder": "openclaw",
+    "image": "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=800&q=80",
+    "category": "Web App",
+    "technologies": ["Next.js", "React", "TypeScript", "PostgreSQL", "Prisma", "OpenAI SDK", "Ollama"],
+    "features": [
+      "Interactive calendar UI with FullCalendar",
+      "RESTful CRUD API for event management",
+      "Streaming AI chat with natural language commands",
+      "Auto CREATE / UPDATE / DELETE events via AI",
+      "Date-range filtering and input validation",
+      "Ollama local LLM backend support"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/claw-calendar",
+    "featured": true,
+    "date": "2026-03-01"
+  },
+  {
+    "id": 2,
+    "title": "AI Interview Training System",
+    "description": "Multimodal AI system for interactive interview training — facial expression analysis and adaptive question generation.",
+    "fullDescription": "A research collaboration with a lecturer at PT Sentra Vidya Utama (SEVIMA). Handled video/image data to detect facial liveness, track expressions, and analyze engagement in real time. Contributed to orchestrating multiple data streams (video, audio, text) and built an adaptive module that generates interview questions tailored to individual user profiles.",
+    "imageFolder": null,
+    "image": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80",
+    "category": "AI",
+    "technologies": ["Python", "PyTorch", "Computer Vision", "NLP", "Multimodal AI"],
+    "features": [
+      "Facial liveness detection and expression tracking",
+      "Real-time engagement analysis from video",
+      "Multi-stream orchestration (video, audio, text)",
+      "Adaptive interview question generation per user profile",
+      "Research collaboration with PT Sentra Vidya Utama"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": true,
+    "date": "2025-09-01"
+  },
+  {
+    "id": 3,
+    "title": "Anime Face Generator",
+    "description": "Deep Convolutional GAN using PyTorch to generate realistic 128×128 anime face images, evaluated with FID score.",
+    "fullDescription": "Developed a Deep Convolutional GAN (DCGAN) using PyTorch to generate realistic 128×128 anime face images. Designed a Generator with transposed convolutions and a Discriminator with spectral normalization for stable training. Implemented a training pipeline with BCE loss, data augmentation, and TensorBoard logging for 30 epochs. Evaluated generated image quality using the FID (Fréchet Inception Distance) metric on the Kaggle anime faces dataset.",
+    "imageFolder": "animeface",
+    "image": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80",
+    "category": "AI",
+    "technologies": ["PyTorch", "Python", "DCGAN", "TensorBoard", "NumPy"],
+    "features": [
+      "Deep Convolutional GAN (DCGAN) architecture",
+      "Generator with transposed convolutions",
+      "Discriminator with spectral normalization for training stability",
+      "BCE loss + data augmentation pipeline",
+      "TensorBoard logging for 30 epochs",
+      "FID metric evaluation on Kaggle anime faces dataset"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/DCGAN-128X128",
+    "featured": true,
+    "date": "2025-03-01"
+  },
+  {
+    "id": 4,
+    "title": "Job Recommendation System",
+    "description": "ML-based job recommendation engine using RuleFit with Random Forest on 9,000+ records.",
+    "fullDescription": "Developed an ML-based job recommendation system using the RuleFit algorithm combining Random Forest and L1 Logistic Regression. Preprocessed a dataset of 9,000+ records with a 74.67% retention rate through deduplication and outlier removal. Built a complete training pipeline with scikit-learn including model evaluation, hyperparameter tuning, and performance metrics tracking. Created Jupyter notebooks for data normalization, model training, and deployment with joblib serialization.",
+    "imageFolder": "jobrec",
+    "image": "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80",
+    "category": "AI",
+    "technologies": ["Python", "Scikit-learn", "RuleFit", "Random Forest", "Pandas", "Jupyter", "joblib"],
+    "features": [
+      "RuleFit with Random Forest + L1 Logistic Regression",
+      "Preprocessed 9,000+ records (74.67% retention)",
+      "Deduplication and outlier removal pipeline",
+      "Hyperparameter tuning and cross-validation",
+      "Jupyter notebooks for full end-to-end flow",
+      "joblib serialization for deployment"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/Job-Recommendation",
+    "featured": false,
+    "date": "2025-11-01"
+  },
+  {
+    "id": 5,
+    "title": "Menya 麺屋",
+    "description": "Japanese restaurant website with Gemini AI chatbot for menu recommendations and full e-commerce features.",
+    "fullDescription": "Developed a Japanese restaurant website with Laravel featuring complete e-commerce functionality. Created an AI chatbot assistant using Google Gemini API for menu recommendations and order customization. Built full e-commerce features including user authentication, menu browsing, shopping cart, and checkout system. Designed a responsive Japanese-themed UI with Tailwind CSS and Livewire for real-time interactions.",
+    "imageFolder": "menya",
+    "image": "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=800&q=80",
+    "category": "Web App",
+    "technologies": ["Laravel", "PHP", "Google Gemini API", "Tailwind CSS", "Livewire", "MySQL"],
+    "features": [
+      "AI chatbot with Google Gemini API for recommendations",
+      "Full e-commerce: cart, checkout, authentication",
+      "Livewire for real-time UI interactions",
+      "Japanese-themed responsive design with Tailwind CSS",
+      "Menu browsing and order customization"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/Menya",
+    "featured": false,
+    "date": "2025-03-01"
+  },
+  {
+    "id": 6,
+    "title": "Multiplayer Chess Game",
+    "description": "Online multiplayer chess with real-time gameplay, full chess engine, and automated email notifications via SMTP.",
+    "fullDescription": "Developed an online multiplayer chess game with real-time gameplay using Python socket programming. Implemented a complete chess engine with move validation, check/checkmate detection, and special moves including castling and en passant. Built an interactive GUI using Pygame featuring a visual board, piece animations, and a 10-minute per-game timer. Integrated an automated email notification system using SMTP to inform players of game results.",
+    "imageFolder": "chess",
+    "image": "https://images.unsplash.com/photo-1580541832626-2a7131ee809f?w=800&q=80",
+    "category": "Game",
+    "technologies": ["Python", "Pygame", "Socket Programming", "SMTP"],
+    "features": [
+      "Real-time multiplayer via Python sockets",
+      "Full chess engine with move validation",
+      "Check / checkmate detection",
+      "Special moves: castling and en passant",
+      "Pygame GUI with piece animations",
+      "10-minute game timer",
+      "Automated SMTP email result notifications"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/Multiplayer-Chess-Game",
+    "featured": false,
+    "date": "2025-04-01"
+  },
+  {
+    "id": 7,
+    "title": "Tangga",
+    "description": "Concentration game inspired by 'I'm on Observation Duty' — find objects that change over time across multiple rooms.",
+    "fullDescription": "Tangga is a concentration game that trains players' focus and observation skills, inspired by 'I'm on Observation Duty'. Players must find objects that subtly change as the game progresses across multiple rooms. All game elements — including the game logic and visual assets — were designed and built from scratch by me and my partner.",
+    "imageFolder": "tangga",
+    "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80",
+    "category": "Game",
+    "technologies": ["C#", "Java", "OOP"],
+    "features": [
+      "Concentration gameplay inspired by 'I'm on Observation Duty'",
+      "Multiple rooms: Gaming Room, Living Room, Bathroom, Bedroom",
+      "Objects that subtly change over time",
+      "Custom-made game assets designed from scratch",
+      "Built as a collaborative project with a partner"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tendonintendo/FP-PBO",
+    "featured": false,
+    "date": "2024-01-01"
+  },
+  {
+    "id": 8,
+    "title": "Todolist App",
+    "description": "Full-stack todo application built with NestJS and TypeScript using modular architecture and RESTful API.",
+    "fullDescription": "Built a full-stack todo list application using NestJS framework with TypeScript. Implemented a RESTful API with dependency injection and modular architecture following NestJS best practices. Integrated database ORM for task persistence and CRUD operations. Developed a responsive UI with CSS styling for optimal user experience.",
+    "imageFolder": "todolist",
+    "image": "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80",
+    "category": "Web App",
+    "technologies": ["NestJS", "TypeScript", "ORM", "REST API", "CSS"],
+    "features": [
+      "RESTful API with NestJS and TypeScript",
+      "Dependency injection and modular architecture",
+      "Database ORM for task persistence",
+      "Full CRUD operations",
+      "Responsive CSS UI"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/todolist",
+    "featured": false,
+    "date": "2025-11-01"
+  }
+]
