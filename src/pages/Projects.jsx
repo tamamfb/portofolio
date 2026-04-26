@@ -35,8 +35,6 @@ export default function Projects() {
       filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
     } else if (sortBy === 'oldest') {
       filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
-    } else if (sortBy === 'popular') {
-      filtered.sort((a, b) => b.featured - a.featured);
     }
 
     setFilteredProjects(filtered);
@@ -64,7 +62,7 @@ export default function Projects() {
       </div>
 
       {/* Search & Filter */}
-      <div className="fade-in" style={{ animationDelay: '0.15s' }}>
+      <div className="fade-in relative z-10" style={{ animationDelay: '0.15s' }}>
         <SearchFilter
           searchQuery={searchQuery}
           selectedCategory={selectedCategory}

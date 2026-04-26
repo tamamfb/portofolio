@@ -152,6 +152,29 @@
     "date": "2024-01-01"
   },
   {
+    "id": 9,
+    "title": "CLIP Face Anti-Spoofing",
+    "description": "Fine-tuned CLIP ViT-L/14 for 6-class face anti-spoofing with multi-level features, progressive training, and ensemble inference — achieving F1=0.9946.",
+    "fullDescription": "Fine-tuned OpenAI's CLIP ViT-L/14@336px backbone for a 6-class face anti-spoofing task on a Kaggle competition dataset. Designed a Globally Aware Connector (GAC) that fuses multi-level patch features (early, mid, deep layers) via cross-attention before classification. Implemented a progressive training strategy: frozen backbone → partial unfreeze → full fine-tune with cosine LR scheduling. Applied aggressive augmentation (RandAugment, MixUp, color jitter, elastic distortion) and used ArcFace + cross-entropy loss with label smoothing. Achieved ensemble inference with Test-Time Augmentation (TTA) across five independently trained folds, reaching a final F1 score of 0.9946.",
+    "imageFolder": "fas",
+    "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
+    "category": "AI",
+    "technologies": ["CLIP", "PyTorch", "ViT-L/14", "Python", "ArcFace", "TTA", "Ensemble"],
+    "features": [
+      "CLIP ViT-L/14@336px backbone with frozen-to-fine-tune progressive training",
+      "Globally Aware Connector (GAC) fusing early, mid, and deep patch features via cross-attention",
+      "6-class face anti-spoofing: live vs. 5 spoof attack types",
+      "ArcFace + cross-entropy loss with label smoothing",
+      "Aggressive augmentation: RandAugment, MixUp, elastic distortion, color jitter",
+      "5-fold ensemble with Test-Time Augmentation (TTA)",
+      "Final F1 score: 0.9946 on Kaggle competition"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/fas_clip",
+    "featured": true,
+    "date": "2026-04-01"
+  },
+  {
     "id": 8,
     "title": "Todolist App",
     "description": "Full-stack todo application built with NestJS and TypeScript using modular architecture and RESTful API.",
