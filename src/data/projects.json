@@ -175,6 +175,29 @@
     "date": "2026-04-01"
   },
   {
+    "id": 10,
+    "title": "WaveDiff",
+    "description": "Extended LiteVAE with content-adaptive wavelet attention for efficient latent diffusion — SSIM >0.988 at 48× compression and +19.2% Inception Score.",
+    "fullDescription": "Extended LiteVAE (NeurIPS 2024) by replacing fixed Haar wavelet aggregation with a content-adaptive attention mechanism that weights LL/LH/HL/HH sub-bands per sample, achieving SSIM >0.988 at 48× compression. Validated across three encoder variants (Haar+Fixed, Haar+Adaptive, db4+Adaptive) on CelebA 162k, improving PSNR by +0.13 dB and LPIPS by −0.002 with only +20k additional parameters. Trained a 32.5M-parameter DiT-Small on cached latent spaces using adaLN-zero conditioning and bfloat16 mixed precision. Full WaveDiff (db4+Adaptive) achieved the highest Inception Score of 2.36 (+19.2% vs. baseline) with DDIM 50-step sampling for ~10–20× inference speedup.",
+    "imageFolder": "wavediff",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "Python", "LiteVAE", "DiT", "Wavelet", "DDIM", "CelebA"],
+    "features": [
+      "Content-adaptive wavelet attention weighting LL/LH/HL/HH sub-bands per sample",
+      "SSIM >0.988 at 48× compression on CelebA 162k",
+      "+0.13 dB PSNR and −0.002 LPIPS improvement with only +20k extra parameters",
+      "Three encoder variants: Haar+Fixed, Haar+Adaptive, db4+Adaptive",
+      "32.5M-parameter DiT-Small with adaLN-zero conditioning and bfloat16 mixed precision",
+      "Inception Score 2.36 (+19.2% vs. baseline) with DDIM 50-step sampling",
+      "~10–20× inference speedup over standard DDPM"
+    ],
+    "liveLink": null,
+    "githubLink": "https://github.com/tamamfb/WaveDiff-",
+    "featured": true,
+    "date": "2026-06-01"
+  },
+  {
     "id": 8,
     "title": "Todolist App",
     "description": "Full-stack todo application built with NestJS and TypeScript using modular architecture and RESTful API.",
