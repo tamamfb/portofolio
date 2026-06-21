@@ -182,7 +182,7 @@
     "imageFolder": "wavediff",
     "image": null,
     "category": "AI",
-    "technologies": ["PyTorch", "Python", "LiteVAE", "DiT", "Wavelet", "DDIM", "CelebA"],
+    "technologies": ["PyTorch", "Python", "LiteVAE", "Diffusion Models", "DiT", "Wavelet", "DDIM", "CelebA"],
     "features": [
       "Content-adaptive wavelet attention weighting LL/LH/HL/HH sub-bands per sample",
       "SSIM >0.988 at 48× compression on CelebA 162k",
