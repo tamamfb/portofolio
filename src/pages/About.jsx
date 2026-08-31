@@ -78,7 +78,7 @@ export default function About() {
             <p className="text-sm text-gray-400 mt-1">Aug 2023 – Present</p>
           </div>
           <div className="flex-shrink-0 text-center bg-[#FFF2E8] border border-[#FFD6B8] rounded-xl px-6 py-4">
-            <p className="text-3xl font-extrabold text-[#E67E4D]">3.77</p>
+            <p className="text-3xl font-extrabold text-[#E67E4D]">3.79</p>
             <p className="text-xs text-gray-400 font-semibold">GPA / 4.00</p>
           </div>
         </div>
