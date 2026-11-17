@@ -3,13 +3,6 @@ import Journey from '../components/Journey'
 import { DoodleIcon } from '../components/doodle/art'
 import journey from '../data/journey.json'
 
-const FACTS = [
-  { label: 'Location', value: 'Flexible: remote or on-site', icon: 'star', bg: 'bg-sun' },
-  { label: 'Studying', value: 'CS at ITS, since 2023', icon: 'chart', bg: 'bg-sky' },
-  { label: 'Into', value: 'AI, data science & software engineering', icon: 'heart', bg: 'bg-rose' },
-  { label: 'Go-to stack', value: 'Python, PyTorch & TypeScript', icon: 'bolt', bg: 'bg-white' },
-]
-
 const SKILLS = [
   { label: 'Programming languages', icon: 'bolt', items: ['Python', 'JavaScript', 'TypeScript', 'C', 'C++', 'C#', 'PHP', 'R', 'SQL'] },
   {
@@ -55,17 +48,6 @@ export default function About() {
           <DoodleIcon kind="star" size={24} className="floaty absolute right-0 top-[52%]" style={{ animationDelay: '-2.6s', '--r': '14deg' }} />
         </div>
       </section>
-
-      {/* four facts, one row across the full width */}
-      <ul className="mt-11 flex flex-wrap lg:flex-nowrap lg:justify-between gap-3 slide-up" style={{ animationDelay: '.08s' }}>
-        {FACTS.map((f) => (
-          <li key={f.label} className={`inline-flex items-center gap-2.5 rounded-full border-2 border-ink ${f.bg} pl-3 pr-[18px] py-2.5 text-[15px] font-bold shadow-lift-sm`}>
-            <DoodleIcon kind={f.icon} size={20} />
-            <span className="sr-only">{f.label}: </span>
-            {f.value}
-          </li>
-        ))}
-      </ul>
 
       {/* journey */}
       <section className="mt-[clamp(80px,8vw,110px)]" aria-labelledby="journey-title">
