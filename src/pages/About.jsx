@@ -74,10 +74,6 @@ export default function About() {
             <span className="label-chip bg-sun">My journey</span>
             <h2 id="journey-title" className="h-display mt-4 text-[clamp(36px,3.4vw,48px)] tracking-[-0.02em]">The road so far</h2>
           </div>
-          <p className="pb-1.5 font-serif italic text-lg md:text-xl text-soft">
-            <span className="md:hidden">(swipe sideways, tap a stop)</span>
-            <span className="hidden md:inline">(scroll sideways, hover a stop)</span>
-          </p>
         </div>
         <div className="mt-8">
           <Journey stops={journey} />

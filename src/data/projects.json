@@ -26,7 +26,7 @@
     "title": "KarirLink: Interview Answer Consistency Audit",
     "description": "Veracity Audit module for an AI interview-practice platform: checks whether a candidate's answers stay consistent, claim by claim, with quotes as proof.",
     "fullDescription": "KarirLink (CLAIR) is an AI job-interview simulator built by SEVIMA and PENS for fresh graduates. I own its Veracity Audit module: a FastAPI service that turns practice-interview answers, typed or transcribed by Whisper, into claim-level credibility coaching. It extracts measurable facts tied to named entities, cross-checks each one against the candidate's other answers and their CV profile, and labels it contradiction, consistent, insufficient detail or not probed, every finding backed by quotes from both sides. LLM reasoning (Gemini or OpenRouter) is grounded in a meta-analytic table of verbal deception cues and audited before each report ships. By design there is no per-person lie score: research on the DOLOS dataset showed such scores sit at chance (AUC around 0.5), so the module works as a fact-checking editor that coaches the candidate instead.",
-    "imageFolder": null,
+    "imageFolder": "karirlink",
     "image": null,
     "category": "AI",
     "technologies": ["Python", "FastAPI", "LLMs", "NLP", "NestJS", "Next.js"],
@@ -40,7 +40,7 @@
       "Coverage stated in every report, and no per-person lie score by design",
       "Wired through the AI Gateway and NestJS backend into the results page, backed by 188 tests"
     ],
-    "liveLink": null,
+    "liveLink": "https://karirlink.hiliriset.id/",
     "githubLink": null,
     "featured": true,
     "date": "2025-09-01"
@@ -220,5 +220,225 @@
     "githubLink": "https://github.com/tamamfb/todolist",
     "featured": false,
     "date": "2025-11-01"
+  },
+  {
+    "id": 11,
+    "title": "Parcel Damage Inspection from Photos",
+    "description": "Sorting parcel photos into intact, damaged and non-standard packaging, with near-duplicate forensics and a frozen-encoder ensemble (macro-F1 0.968).",
+    "fullDescription": "An image classifier for e-commerce quality control, trained on 12,223 messy parcel photos: WEBP files posing as JPG, RGBA images, sizes from 46 to 8,000 px, and three imbalanced classes (intact, damaged, non-standard packaging). A near-duplicate forensics stage (D4-invariant perceptual hashes, DINOv2 neighbours, ORB + RANSAC geometric checks) showed that 59.9% of test images have a labelled copy in the training set, so validation is grouped by copy group to keep scores honest. The model combines eight frozen vision encoders (PE-Core, SigLIP2, EVA02-CLIP, CLIP, DINOv3, DINOv2) with logistic and MLP heads, plus fine-tuned ConvNeXt-B and PE-Core-L, and uses Confident Learning to down-weight noisy labels. Post-processing transfers labels across copy groups, removes an augmentation shortcut found in two image sources, and grows the rare class with kNN-graph label propagation. Result: macro-F1 0.968 on the hidden test set and 0.952 nested out-of-fold.",
+    "imageFolder": "parcel-qc",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "timm", "DINOv2", "SigLIP2", "OpenCV", "scikit-learn"],
+    "features": [
+      "Near-duplicate forensics: perceptual hashes, DINOv2 neighbours, ORB + RANSAC verification",
+      "Validation grouped over 6,432 copy groups, with nested CV",
+      "Eight frozen vision encoders with LR / MLP heads, plus fine-tuned ConvNeXt-B and PE-Core-L",
+      "Confident Learning flags 399 likely-noisy labels and down-weights them",
+      "Label transfer across copy groups and a fix for an augmentation shortcut",
+      "Rare-class expansion with kNN-graph label propagation",
+      "Macro-F1 0.968 on the hidden test set"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": true,
+    "date": "2026-10-01"
+  },
+  {
+    "id": 12,
+    "title": "Urban Building Energy Prediction",
+    "description": "Predicting gas, electricity and heating adoption for 429k residential micro-areas, by finding the exact formulas hidden in the data.",
+    "fullDescription": "A multi-output model for a cold-climate city that predicts five building-energy targets for each of 429,303 residential micro-areas from 201 anonymised features: gas use, electricity use, gas use per square metre, clean-building ratio and electric-heating adoption. The key was finding exact identities in the data: gas equals intensity times floor area, the clean ratio follows a closed-form formula (zero error), electric-heating adoption is constant within a subzone, and the household count can be reconstructed from HVAC percentages. On top of that sit losses matched to each target's noise (area-weighted least squares, per-meter Poisson), 14 LightGBM / XGBoost models and two neural nets (a multi-task MLP pretrained as a denoising autoencoder, and a Poisson MLP), a cross-fitted NNLS blend per target, and a nested spatial residual correction. Validation was backed by adversarial validation (AUC 0.504), with every label-derived feature built out-of-fold. Column-wise NRMSE: 0.251 in CV and 0.248 on the hidden test set. A policy layer with SHAP turns the model into renovation priorities, reaching 31% of the savings potential on the same 6.9% of floor area where a simple baseline reaches 16%.",
+    "imageFolder": "building-energy",
+    "image": null,
+    "category": "Data Science",
+    "technologies": ["LightGBM", "XGBoost", "PyTorch", "SHAP", "scikit-learn", "SciPy"],
+    "features": [
+      "Exact data identities turn one target into a formula with zero error",
+      "Household count reconstructed exactly from HVAC percentages",
+      "Noise-matched losses: area-weighted least squares and per-meter Poisson",
+      "14 GBDTs + 2 neural nets, blended per target with cross-fitted NNLS",
+      "Nested spatial residual correction and out-of-fold label features (no leakage)",
+      "NRMSE 0.248 on the hidden test set",
+      "Policy layer with SHAP: renovation targeting (2x the savings reached) and grid-risk zones"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": true,
+    "date": "2026-10-16"
+  },
+  {
+    "id": 13,
+    "title": "Public Complaint Mining from Obfuscated Comments",
+    "description": "Mapping 58k disguised Indonesian social-media comments to 9 public-service areas and their sentiment, with LoRA-tuned LLMs.",
+    "fullDescription": "An NLP system that reads citizens' social-media comments and routes them to the public-service area they are about (infrastructure, health, permits, environment, public order, transport, social aid, security, education), then reads the sentiment of each. The comments were deliberately disguised with homoglyphs, leetspeak, spaced-out letters, per-word Caesar shifts and invisible characters, so a rule-based de-obfuscation normaliser comes first, cutting the out-of-vocabulary rate from 15.3% to 4.9%. Relevance is predicted by a fully fine-tuned IndoBERT-large and five LoRA-tuned Sailor2-3B models that read each post's caption as context through prefix KV caching, stacked with LightGBM and calibrated per post (macro-F1 0.944 on the hidden test set). Sentiment is a second stage: a per-comment Sailor2-3B model with a tuned decision rule, scoring 0.761 on 9 areas x 4 classes. Everything is validated with GroupKFold by post, so comments on the same post never leak across folds. It ends in a dashboard concept that ranks complaint areas for each agency.",
+    "imageFolder": "complaint-mining",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "Transformers", "LoRA (PEFT)", "IndoBERT", "Sailor2-3B", "LightGBM"],
+    "features": [
+      "Rule-based de-obfuscation (homoglyphs, leetspeak, Caesar shifts): OOV 15.3% to 4.9%",
+      "IndoBERT-large + five LoRA Sailor2-3B models reading the post caption via prefix KV caching",
+      "GroupKFold by post to keep comments from the same post out of each other's folds",
+      "LightGBM stacker with per-post calibration: macro-F1 0.944 for 9-area relevance",
+      "Two-stage relevance + sentiment model: 0.761 on 9 areas x 4 classes",
+      "Dashboard concept that ranks complaint areas per agency"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": true,
+    "date": "2026-11-01"
+  },
+  {
+    "id": 14,
+    "title": "Next-Click Prediction on Wikipedia Paths",
+    "description": "Predicting which link a person clicks next on the way to a target article, with the link graph rebuilt from page screenshots (accuracy 0.890).",
+    "fullDescription": "Given the current and target Wikipedia article in the Wikispeedia game, predict the next link a human clicks. The hyperlink graph was not available as data: it existed only as blue pixels in 4,604 page screenshots. Links were recovered with blue-pixel segmentation, TrOCR on hashed anchor crops (181,662 anchors collapsed to 11,102 unique renderings, cutting OCR from about 6 hours to 21 minutes) and fuzzy matching to the closed title set, giving 94,670 edges at 0.994 candidate recall. Prediction is two-stage: a reverse BFS from the target keeps only candidates at minimum distance, then a LightGBM ranker scores them with a value function over the onward route, two-step lookahead, link-structure and category features, all rank-normalised within each candidate set. Validated with GroupKFold by target, since test targets never appear in training. Accuracy: 0.875 in CV and 0.890 on the test set.",
+    "imageFolder": "wikispeedia",
+    "image": null,
+    "category": "AI",
+    "technologies": ["LightGBM", "TrOCR", "Transformers", "Pillow", "scikit-learn", "pandas"],
+    "features": [
+      "Hyperlink graph rebuilt from 4,604 screenshots: 94,670 edges, 0.994 candidate recall",
+      "TrOCR on deduplicated anchor crops: 6 h of OCR down to 21 minutes",
+      "Reverse BFS from the target narrows about 21 candidates to 5",
+      "LightGBM ranker that scores the onward route, not just the next node (+10 accuracy points)",
+      "GroupKFold by target, matching a test set with unseen targets",
+      "Accuracy 0.875 in CV, 0.890 on the test set"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-07-19"
+  },
+  {
+    "id": 15,
+    "title": "Beijing Traffic Speed Forecasting",
+    "description": "Forecasting speed on 1,260 road segments 20 to 60 minutes ahead from one hour of history, event text and the road graph.",
+    "fullDescription": "A spatio-temporal forecaster on the BjTT dataset: predict speed on 1,260 Beijing road segments at +20, +40 and +60 minutes from 15 steps of history, Chinese event text and a directed road graph. TrafficNet is a time-agnostic STID-style network: a per-node MLP encoder with node embeddings, three spatial mixing blocks over the forward and backward graph plus a learned low-rank adjacency, and residual prediction against the last observation. Zeros are treated as missing readings (imputed, masked from the loss, flagged, with a dead-road rule). Event text is turned into a spatial mask through a pinyin road-name mapper (185 of 191 names matched) diffused over the graph, though the ablation showed the text branch did not help. An NNLS ensemble of graph models and a ridge model reaches validation MSE 28.06, against 50.89 for persistence.",
+    "imageFolder": "traffic",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "NumPy", "scikit-learn", "SciPy", "pypinyin"],
+    "features": [
+      "Graph network with directed spatial mixing and a learned low-rank adjacency",
+      "Zeros handled as missing data: imputation, loss masking and a dead-road rule",
+      "Event text mapped to roads via pinyin (185/191 names) and diffused over the graph",
+      "Honest ablation: the graph is worth 3.85 MSE, the text branch hurt",
+      "NNLS ensemble: validation MSE 28.06 vs 50.89 for persistence"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-07-20"
+  },
+  {
+    "id": 16,
+    "title": "Mammogram Classification with Zero-Shot Ensembles",
+    "description": "Normal, benign or malignant from only 212 mammograms, using a calibrated ensemble of five public breast-cancer models.",
+    "fullDescription": "A 3-class mammogram classifier built from only 212 training images. Data forensics showed the image format leaks the Normal class (every grayscale file is Normal), so the real problem is benign vs malignant. CC and MLO views were paired into cases without labels (OCR of the view text, embeddings from nine encoders, laterality and size, then max-weight matching), which made it possible to validate per woman. That exposed how much leaky folds inflate results: AUC 0.83 per image, 0.57 per case, 0.52 per woman. The final model trains nothing on this data: it is a calibrated zero-shot ensemble of frozen models from five public teams (RSNA 2023 1st and 3rd place, Theo Viel, MAM-CLIP and a TEKNOFEST 2023 model), chosen by a pre-registered rule from 13 ported models. Test-set score rose from 0.657 to 0.75, with woman-grouped CV macro-F1 0.83.",
+    "imageFolder": "mammogram",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "timm", "OpenCV", "scikit-learn", "Pillow"],
+    "features": [
+      "Format forensics: grayscale files are always Normal, so the task reduces to benign vs malignant",
+      "Label-free CC/MLO case pairing (OCR, 9 encoders, max-weight matching): 67/67 pairs consistent",
+      "Validation grouped by woman, showing leaky folds inflate AUC from 0.52 to 0.83",
+      "Zero-shot ensemble of five public teams' frozen models with class-balanced calibration",
+      "13 public models ported and compared under a pre-registered selection rule",
+      "Test score 0.657 to 0.75, woman-grouped CV macro-F1 0.83"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-09-19"
+  },
+  {
+    "id": 17,
+    "title": "House Price Prediction from Listing Text",
+    "description": "Predicting a house's list price from its sales description alone, with DeBERTa and a stacked ensemble (MAE down 51%).",
+    "fullDescription": "Predicts the list price in USD from nothing but a free-text listing description (14,640 listings, median $499,900, up to $80M), measured by MAE on the raw dollar scale. Features come from regex extraction (beds, baths, square feet, acres, keyword families), leak-free out-of-fold location encoding from place names in the text, and TF-IDF word and character n-grams with SVD. Base models include LinearSVR, Ridge, kNN, a huber-loss LightGBM, an ordinal ensemble of 29 threshold classifiers, and DeBERTa-v3-base and -large fine-tuned over 5 folds with L1 loss on the log price. A level-2 stack over 42 out-of-fold predictions, a median-regression blend and a near-duplicate override bring out-of-fold MAE from 550k (constant median) to 267k. Built in one day.",
+    "imageFolder": "property-price",
+    "image": null,
+    "category": "AI",
+    "technologies": ["DeBERTa-v3", "Transformers", "LightGBM", "CatBoost", "XGBoost", "scikit-learn"],
+    "features": [
+      "Regex and location features mined from free text, encoded out-of-fold",
+      "DeBERTa-v3-base and -large fine-tuned on the log price with L1 loss",
+      "Ordinal ensemble of 29 threshold classifiers read as a conditional median",
+      "Level-2 stack over 42 out-of-fold predictions plus a median-regression blend",
+      "Out-of-fold MAE 550k to 267k (-51%)"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-09-20"
+  },
+  {
+    "id": 18,
+    "title": "LLM Authorship Attribution",
+    "description": "Which of 18 language models wrote this passage? Frozen-LM fingerprints plus prompt-group decoding (balanced accuracy 0.737).",
+    "fullDescription": "Attributes 40 to 250-word passages to one of 18 LLMs (five GPT, four Gemini, five Claude, Qwen, two GLM and Kimi), on prompts never seen in training, running offline within 9 hours. EDA found typography acts as a fingerprint (Gemini never uses the em dash, Claude and GLM never use the curly apostrophe), while the hard cases are sibling models from the same family. The pipeline recovers the hidden prompt groups by clustering passages (ARI 0.992), subtracts each group's mean to keep style and drop topic, and combines three components: TF-IDF and stylometry, hidden-state features from frozen Qwen3 base models with shrinkage LDA, and DeBERTa-v3-large trained on whole prompt groups. A Sinkhorn decoder then enforces that each model appears at most once per prompt, adding 0.10 to 0.20 balanced accuracy. Grouped 5-fold CV: 0.737.",
+    "imageFolder": "llm-attribution",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "Transformers", "Qwen3", "DeBERTa-v3", "scikit-learn", "SciPy"],
+    "features": [
+      "Typography fingerprints: em dashes and curly quotes split model families",
+      "Hidden prompt groups recovered by clustering passages (ARI 0.992)",
+      "Prompt-centring removes topic and keeps style (frozen-LM LDA 0.43 to 0.60)",
+      "Frozen Qwen3 hidden states + shrinkage LDA, TF-IDF stylometry and a group-trained DeBERTa",
+      "Sinkhorn decoding with one model per prompt: +0.10 to +0.20 balanced accuracy",
+      "Grouped 5-fold CV balanced accuracy 0.737 on 18 classes"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-10-15"
+  },
+  {
+    "id": 19,
+    "title": "Geosteering Copilot: Wellbore Geology Prediction",
+    "description": "Predicting stratigraphic depth along horizontal wells from gamma-ray logs and neighbouring wells, to support drilling decisions.",
+    "fullDescription": "Automated geosteering for horizontal drilling: for each well, predict True Vertical Thickness (the bit's position in the rock layers) along the lateral beyond the last known point, from the trajectory, the gamma-ray log and a typewell template, across 773 wells. The CPU-only model blends three structural estimators (neighbour drift on a datum-free quantity, kNN marker surfaces and LightGBM marker surfaces), adds a learned gamma-ray correction from a LightGBM discriminator with forward-backward smoothing over depth offsets, and copies TVT exactly when a trajectory matches a known well. The main finding was about validation: random well-level CV leaks through wells drilled from the same pad. A spatial-block CV showed the neighbour gain disappears once the pad is held out (14.46 vs 18.67 RMSE on the same wells). Test RMSE went from 13.92 to 13.00 ft, and the approach is written up as a concept paper, \"Geosteering Copilot: An Uncertainty-Aware Decision-Support System for Horizontal Drilling\".",
+    "imageFolder": "geosteering",
+    "image": null,
+    "category": "Data Science",
+    "technologies": ["LightGBM", "SciPy", "NumPy", "pandas", "scikit-learn", "Typst"],
+    "features": [
+      "Three-way structural blend: neighbour drift, kNN and LightGBM marker surfaces",
+      "Learned gamma-ray correction with a forward-backward posterior over depth offsets",
+      "Spatial-block CV exposed a same-pad leak hidden by random well-level CV",
+      "CPU-only, offline, about 15 seconds per run",
+      "Test RMSE 13.92 to 13.00 ft",
+      "Concept paper: Geosteering Copilot, an uncertainty-aware decision-support system"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-07-26"
+  },
+  {
+    "id": 20,
+    "title": "Exam Cheating Detection from Video",
+    "description": "Spotting cheating in exam footage second by second, from front and side cameras, with frozen video encoders and a temporal transformer (macro-F1 0.992).",
+    "fullDescription": "A video model that flags cheating during an exam, second by second. Training data is 416 videos of 26 people acting out 8 behaviours from a front and a side camera: four cheating (looking under the desk, reading hidden notes, repeated peeking, using a smartwatch) and four normal (writing, thinking, looking around, checking a smartwatch). Test data arrives as shuffled 1-second clips, so the pipeline first reassembles them into full videos (765 of 768 recovered in simulation, with no wrong joins) and recovers which clips share a camera and a person. Features come from two frozen encoders, DINOv2 ViT-L on frames and V-JEPA 2 on clips, fed to a small temporal transformer that predicts the 8 behaviours. Decisions are made at increasing levels of context: per clip, per video, a one-to-one assignment of behaviours per person, and front/side camera fusion. A final step localises when the cheating starts, so only the seconds after the onset are flagged. Cross-validated by person, macro-F1 rises from 0.609 per clip to 0.995 with the assignment step, and the per-second test score reaches 0.992.",
+    "imageFolder": "cheating-detection",
+    "image": null,
+    "category": "AI",
+    "technologies": ["PyTorch", "DINOv2", "V-JEPA 2", "timm", "OpenCV", "SciPy"],
+    "features": [
+      "Shuffled 1-second clips reassembled into full videos (765/768 in simulation, 0 wrong joins)",
+      "Camera and person structure recovered by clustering frozen DINOv2 features",
+      "Two frozen streams, DINOv2 ViT-L and V-JEPA 2, into a temporal transformer over 8 behaviours",
+      "Hungarian one-to-one assignment of behaviours per person, plus front/side camera fusion",
+      "Onset localisation flags only the seconds after the cheating starts",
+      "Macro-F1 0.995 cross-validated by person, 0.992 per second on the test set"
+    ],
+    "liveLink": null,
+    "githubLink": null,
+    "featured": false,
+    "date": "2026-11-16"
   }
 ]

@@ -1,72 +1,112 @@
 [
   {
     "date": "Aug 2023",
+    "period": "Aug 2023 — Present",
     "title": "Started CS at ITS",
-    "org": "Institut Teknologi Sepuluh Nopember",
-    "description": "Bachelor's in Computer Science, Surabaya. GPA 3.79 / 4.00 so far.",
+    "role": "B.Sc. in Computer Science",
+    "org": "Sepuluh Nopember Institute of Technology · Surabaya",
+    "description": "Started my Computer Science degree. GPA 3.79 / 4.00 so far.",
     "tags": ["GPA 3.79"],
     "icon": "flag",
-    "color": "#FFD94A",
-    "dummy": false
-  },
-  {
-    "date": "Feb 2024",
-    "title": "Joined the AI lab",
-    "org": "Student research group",
-    "description": "Paper-reading Fridays, model-breaking weekends.",
-    "tags": ["Research", "Deep learning"],
-    "icon": "sparkle",
-    "color": "#CDEFFF",
-    "dummy": true
+    "color": "#FFD94A"
   },
   {
     "date": "Aug 2024",
+    "period": "Aug 2024 — Present",
     "title": "Teaching assistant",
-    "org": "Data Structures course",
-    "description": "Helped 60+ students debug their linked lists.",
-    "tags": ["Teaching", "C++"],
+    "role": "Teaching Assistant",
+    "org": "Sepuluh Nopember Institute of Technology · Surabaya",
+    "description": "Mentoring students, leading lab sessions and grading coursework across Data Mining & Capstone Project, Machine Learning, Data Structures and Fundamental Programming.",
+    "tags": ["Machine Learning", "Data Mining", "Data Structures"],
     "icon": "heart",
-    "color": "#FFD6DE",
-    "dummy": true
+    "color": "#FFD6DE"
   },
   {
-    "date": "Feb 2025",
-    "title": "Data science intern",
-    "org": "Company name",
-    "description": "Dashboards and churn models on real customer data.",
-    "tags": ["Pandas", "SQL"],
-    "icon": "chart",
-    "color": "#FFD94A",
-    "dummy": true
+    "date": "Jan 2025",
+    "period": "Jan 2025 — Feb 2025",
+    "title": "Freelance full stack",
+    "role": "Full Stack Developer (Independent)",
+    "org": "Pemilu FH UPNV JATIM · Surabaya",
+    "description": "Built an end-to-end Laravel platform for student elections, with role-based access control, audit logging and query optimization.",
+    "tags": ["Laravel", "RBAC", "MySQL"],
+    "icon": "bolt",
+    "color": "#FFFFFF"
+  },
+  {
+    "date": "May 2025",
+    "period": "May 2025 — May 2026",
+    "title": "Lab assistant",
+    "role": "Laboratory Assistant",
+    "org": "Intelligent Computing and Vision Laboratory, ITS",
+    "description": "Managed image datasets, annotation workflows and web-based visualization tools to support reproducible computer vision research.",
+    "tags": ["Computer vision", "Datasets", "Annotation"],
+    "icon": "sparkle",
+    "color": "#CDEFFF"
   },
   {
     "date": "Sep 2025",
-    "title": "Research collaboration",
-    "org": "PT Sentra Vidya Utama (SEVIMA)",
-    "description": "Multimodal AI for interview training: facial cues, engagement and adaptive questions.",
-    "tags": ["PyTorch", "Computer vision", "NLP"],
-    "icon": "bolt",
-    "color": "#FFFFFF",
-    "dummy": false
+    "period": "Sep 2025 — Present",
+    "title": "KarirLink research",
+    "role": "Research collaboration",
+    "org": "With a lecturer at PT Sentra Vidya Utama (SEVIMA)",
+    "description": "Built the Veracity Audit module of an AI interview training system: cross-checking a candidate's answers and CV for consistency, with quoted evidence.",
+    "tags": ["FastAPI", "LLMs", "Research"],
+    "icon": "star",
+    "color": "#FFD94A"
   },
   {
-    "date": "Mar 2026",
-    "title": "AI engineer intern",
-    "org": "Company name",
-    "description": "Took an LLM feature from notebook to production API.",
-    "tags": ["LLMs", "FastAPI"],
-    "icon": "star",
-    "color": "#CDEFFF",
-    "dummy": true
+    "date": "Dec 2025",
+    "period": "Dec 2025 — Mar 2026",
+    "title": "Data scientist intern",
+    "role": "Data Scientist Intern",
+    "org": "PT Telkom Indonesia, Direktorat IT Digital · Bandung",
+    "description": "Built a two-stage multilingual chatbot intent-matching pipeline (+40% typo tolerance) and cut inference latency by 85–90% with caching and confidence calibration.",
+    "tags": ["ONNX", "NLP", "FastEmbed"],
+    "icon": "chart",
+    "color": "#FFD6DE"
+  },
+  {
+    "date": "Jan 2026",
+    "period": "Jan 2026 — Sep 2026",
+    "title": "AI curriculum team",
+    "role": "AI Curriculum Team",
+    "org": "Google Developer Group on Campus ITS",
+    "description": "Designed an end-to-end AI learning track: ML fundamentals, the maths behind it, hands-on projects and practical LLM/GenAI architectures.",
+    "tags": ["Curriculum", "ML", "GenAI"],
+    "icon": "sparkle",
+    "color": "#FFFFFF"
+  },
+  {
+    "date": "Feb 2026",
+    "period": "Feb 2026 — Jun 2026",
+    "title": "Project manager",
+    "role": "Project Manager & Full Stack Developer",
+    "org": "PT Sentra Vidya Utama (SEVIMA) · Surabaya",
+    "description": "Led a 7-person team shipping a production AI career-matching platform for an EdTech partner, and built it end to end: Laravel, FastAPI, PostgreSQL, Docker.",
+    "tags": ["Leadership", "Laravel", "FastAPI"],
+    "icon": "flag",
+    "color": "#CDEFFF"
+  },
+  {
+    "date": "May 2026",
+    "period": "May 2026 — Present",
+    "title": "Lab coordinator",
+    "role": "Laboratory Assistant Coordinator",
+    "org": "Intelligent Computing and Vision Laboratory, ITS",
+    "description": "Coordinating the lab assistant team: duty schedules, onboarding new assistants, and keeping research and teaching support running.",
+    "tags": ["Leadership", "Computer vision"],
+    "icon": "heart",
+    "color": "#FFD94A"
   },
   {
     "date": "Next",
+    "period": "Next stop",
     "title": "Your team?",
+    "role": "Your team?",
     "org": "Open to AI, data & software roles",
     "description": "Let's talk.",
     "tags": [],
     "icon": "plane",
-    "color": "#E8402A",
-    "dummy": false
+    "color": "#E8402A"
   }
 ]

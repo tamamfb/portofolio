@@ -1,4 +1,4 @@
-import { getProjectImages } from '../data/projectImages'
+import { getProjectCover } from '../data/projectImages'
 import DoodleCover from './DoodleCover'
 import { DoodleIcon } from './doodle/art'
 import { CATEGORY_STYLE, fmtDate } from '../data/site'
@@ -7,8 +7,7 @@ import { CATEGORY_STYLE, fmtDate } from '../data/site'
 const TILTS = [-0.7, 0.4, -0.3, 0.6, -0.5, 0.3, -0.4, 0.7, -0.6]
 
 export default function ProjectCard({ project, onClick, index = 0, titleSize = 'text-2xl' }) {
-  const images = getProjectImages(project.imageFolder)
-  const cover = images[0]
+  const cover = getProjectCover(project.imageFolder)
   const tilt = TILTS[index % TILTS.length]
 
   return (
@@ -23,7 +22,7 @@ export default function ProjectCard({ project, onClick, index = 0, titleSize = '
     >
       <div className="relative aspect-[16/9.4] overflow-hidden rounded-xl border-2 border-ink bg-sun">
         {cover ? (
-          <img src={cover} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img src={cover} alt="" loading="lazy" decoding="async" width={720} height={423} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
         ) : (
           <DoodleCover />
         )}

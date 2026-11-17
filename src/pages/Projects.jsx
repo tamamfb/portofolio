@@ -74,7 +74,7 @@ export default function Projects() {
         <>
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-9">
             {visible.map((p, i) => (
-              <div key={p.id} className="slide-up" style={{ animationDelay: `${0.15 + i * 0.06}s` }}>
+              <div key={p.id} className="slide-up" style={{ animationDelay: `${(i < PAGE ? 0.15 : 0) + (i % PAGE) * 0.04}s` }}>
                 <ProjectCard project={p} index={i} onClick={() => setSelectedProject(p)} />
               </div>
             ))}

@@ -4,15 +4,15 @@ import { Doodle, DoodleIcon } from './doodle/art'
 import { crewWidth, hash } from './doodle/geometry'
 import { EMAIL } from '../data/site'
 
-// Two layouts of the same map: a wide one, and a taller, tighter one for phones.
+// Wide: the whole road fits the frame, no scrolling. Narrow (phones): a shorter
+// strip you can swipe, which re-centres on the selected stop.
 const LAYOUTS = {
-  wide: { vh: 520, spacing: 250, x0: 110, ys: [330, 190, 350, 200, 340, 210, 330], stop: 52, card: 320, road: 30, duck: 92 },
-  narrow: { vh: 520, spacing: 190, x0: 70, ys: [450, 370, 460, 360, 450, 370, 450], stop: 44, card: 264, road: 24, duck: 76 },
+  wide: { vh: 420, minSpacing: 112, x0: 96, ys: [290, 165, 300, 170, 295, 160], stop: 48, road: 26, duck: 80, label: 176 },
+  narrow: { vh: 330, minSpacing: 120, x0: 64, ys: [225, 140, 232, 135, 228, 140], stop: 42, road: 22, duck: 66, label: 150 },
 }
-const CARD_H = 236 // room the opened card needs above or below a stop
 
 function roadPath(pts, startX, endX) {
-  const seg = [[startX, pts[0][1] + 40], ...pts, [endX, pts[pts.length - 1][1] - 40]]
+  const seg = [[startX, pts[0][1] + 34], ...pts, [endX, pts[pts.length - 1][1] - 34]]
   let d = `M${seg[0][0]} ${seg[0][1]}`
   for (let i = 0; i < seg.length - 1; i++) {
     const [ax, ay] = seg[i]
@@ -27,88 +27,98 @@ function Scenery({ w, h, pts, narrow }) {
   const mountains = []
   for (let k = 0; k * 420 < w; k++) mountains.push(40 + k * 420 + hash(k) * 60)
   const clouds = []
-  for (let k = 0; k * 340 < w; k++) clouds.push([160 + k * 340 + hash(k * 3) * 80, 26 + hash(k * 5) * 40])
-  const ms = narrow ? 0.7 : 1
+  for (let k = 0; k * 340 < w; k++) clouds.push([160 + k * 340 + hash(k * 3) * 80, 18 + hash(k * 5) * 30])
+  const ms = narrow ? 0.55 : 0.8
   return (
     <g strokeLinejoin="round" strokeLinecap="round" stroke="var(--ink)" strokeWidth="2.2">
       {mountains.map((x, k) => (
-        <g key={'m' + k} transform={`translate(${x} ${narrow ? 12 : 18}) scale(${ms})`}>
+        <g key={'m' + k} transform={`translate(${x} 10) scale(${ms})`} opacity=".85">
           <path fill="#E9DFC6" d="M2 88 L62 18 L92 52 L128 8 L218 88 Z" />
           <path fill="#FFFBF0" d="M128 8 L112 30 L122 26 L130 34 L140 24 L146 30 Z" />
           <path fill="none" strokeWidth="1.5" d="M70 40 l-8 14 M150 50 l-8 16 M170 66 l-6 10" />
         </g>
       ))}
       {clouds.map(([x, y], k) => (
-        <path key={'c' + k} transform={`translate(${x} ${y})`} fill="#FFFFFF" strokeWidth="2"
+        <path key={'c' + k} transform={`translate(${x} ${y}) scale(${narrow ? 0.7 : 0.85})`} fill="#FFFFFF" strokeWidth="2"
           d="M12 36 C2 36 2 22 12 22 C12 10 30 6 36 16 C40 4 62 4 64 18 C76 14 86 24 80 36 Z" />
       ))}
-      {pts.slice(0, -1).map(([ax, ay], i) => {
-        const [bx, by] = pts[i + 1]
-        const mx = (ax + bx) / 2
-        let ty = ay > by ? Math.max(ay, by) + 30 : Math.min(ay, by) - 70
-        ty = Math.max(narrow ? 150 : 100, Math.min(h - 70, ty))
-        return (
-          <g key={'t' + i}>
-            {i % 2 ? (
-              <g transform={`translate(${mx - 6 + hash(i * 2) * 20} ${ty + 50})`}>
+      {(() => {
+        // trees stand inside the arch under each high stop, clear of every label
+        const ysAll = pts.map((p) => p[1])
+        const midY = (Math.min(...ysAll) + Math.max(...ysAll)) / 2
+        const sc = narrow ? 0.62 : 0.82
+        const drop = narrow ? 86 : 124
+        return pts.map(([sx, sy], i) => sy < midY && (
+          <g key={'t' + i} transform={`translate(${sx} ${Math.min(h - 18, sy + drop)}) scale(${sc})`}>
+            {i % 4 === 1 ? (
+              <g transform="translate(-16 0)">
                 <path fill="none" d="M0 2 L0 -18" />
                 <path fill="#9BD37A" d="M0 -50 C14 -50 20 -38 16 -28 C20 -20 12 -12 0 -14 C-12 -12 -20 -20 -16 -28 C-20 -38 -14 -50 0 -50 Z" />
-                <path fill="none" strokeWidth="1.5" d="M-6 -34 C-3 -30 3 -30 6 -34" />
               </g>
             ) : (
-              <g transform={`translate(${mx - 8 + hash(i * 2) * 20} ${ty + 52})`}>
+              <g transform="translate(-16 0)">
                 <path fill="none" d="M0 2 L0 -10" />
                 <path fill="#5FB247" d="M0 -54 L12 -32 L6 -32 L15 -12 L-15 -12 L-6 -32 L-12 -32 Z" />
               </g>
             )}
-            <g transform={`translate(${mx + 30} ${ty + 62}) scale(.8)`}>
+            <g transform="translate(16 4) scale(.78)">
               <path fill="none" d="M0 2 L0 -10" />
               <path fill="#5FB247" d="M0 -54 L12 -32 L6 -32 L15 -12 L-15 -12 L-6 -32 L-12 -32 Z" />
             </g>
           </g>
-        )
-      })}
-      {pts[2] && (
-        <path transform={`translate(${pts[2][0] + 70} ${Math.min(h - 60, pts[2][1] + 60)})`} fill="#8FDCFF"
-          d="M10 26 C8 8 50 2 78 6 C108 10 118 26 104 38 C88 50 24 48 10 26 Z M36 22 C42 18 50 18 56 22 M66 32 C70 29 76 29 80 32" />
+        ))
+      })()}
+      {!narrow && (
+        <g transform={`translate(6 ${pts[0][1] - 92})`}>
+          <path fill="none" d="M20 68 L20 20" />
+          <path fill="#FFD94A" d="M4 12 L54 12 L64 22 L54 32 L4 32 Z" />
+          <text x="11" y="27" fontSize="11" fontWeight="800" fill="var(--ink)" stroke="none" letterSpacing=".06em">START</text>
+        </g>
       )}
-      {/* start sign (wide layout only; on phones it would sit on the first label) */}
-      {!narrow && <g transform={`translate(4 ${pts[0][1] - 70})`}>
-        <path fill="none" d="M20 68 L20 20" />
-        <path fill="#FFD94A" d="M4 12 L54 12 L64 22 L54 32 L4 32 Z" />
-        <text x="11" y="27" fontSize="11" fontWeight="800" fill="var(--ink)" stroke="none" letterSpacing=".06em">START</text>
-      </g>}
     </g>
   )
 }
 
+const Chevron = ({ dir }) => (
+  <svg width="9" height="16" viewBox="0 0 9 16" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d={dir < 0 ? 'M8 1 L1 8 L8 15' : 'M1 1 L8 8 L1 15'} />
+  </svg>
+)
+
 export default function Journey({ stops }) {
+  const frameRef = useRef(null)
   const viewRef = useRef(null)
   const roadRef = useRef(null)
+  const walkedRef = useRef(null)
   const duckRef = useRef(null)
   const duckFaceRef = useRef(null)
   const duckBodyRef = useRef(null)
-  const closeTimer = useRef(0)
   const drag = useRef(null)
-  const sim = useRef({ L: null, target: 0, lastPrint: 0, id: 0, stopL: [] })
+  const sim = useRef({ L: null, target: 0, lastPrint: 0, id: 0, stopL: [], total: 1 })
 
-  const [narrow, setNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
-  const [active, setActive] = useState(null)
-  const [scroll, setScroll] = useState({ left: 0, width: 0, max: 1 })
-  const [touched, setTouched] = useState(false)
+  const [frameW, setFrameW] = useState(0)
+  const [active, setActive] = useState(0)
+  const [scroll, setScroll] = useState({ left: 0, max: 0 })
   const [prints, setPrints] = useState([])
 
+  const narrow = frameW > 0 && frameW < 768
   const L = LAYOUTS[narrow ? 'narrow' : 'wide']
   const n = stops.length
-  const pts = useMemo(() => stops.map((_, i) => [L.x0 + i * L.spacing, L.ys[i % L.ys.length]]), [stops, L])
-  const trackW = L.x0 + (n - 1) * L.spacing + 200
+
+  // spread the stops to fill the frame; only fall back to scrolling when it is too narrow
+  const spacing = Math.max(L.minSpacing, frameW ? (frameW - 2 * L.x0) / (n - 1) : L.minSpacing)
+  const trackW = Math.max(frameW, 2 * L.x0 + (n - 1) * spacing)
+  const pts = useMemo(() => stops.map((_, i) => [L.x0 + i * spacing, L.ys[i % L.ys.length]]), [stops, L, spacing])
   const d = useMemo(() => roadPath(pts, -40, trackW + 40), [pts, trackW])
   const duckW = crewWidth('duck', L.duck)
+  const mid = (Math.min(...L.ys) + Math.max(...L.ys)) / 2
 
-  useEffect(() => {
-    const on = () => setNarrow(window.innerWidth < 768)
-    window.addEventListener('resize', on)
-    return () => window.removeEventListener('resize', on)
+  useLayoutEffect(() => {
+    const el = frameRef.current
+    if (!el) return
+    const ro = new ResizeObserver(([e]) => setFrameW(Math.round(e.contentRect.width)))
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
 
   // where each stop sits along the road, so the duck can walk to it
@@ -116,6 +126,7 @@ export default function Journey({ stops }) {
     const path = roadRef.current
     if (!path) return
     const total = path.getTotalLength()
+    sim.current.total = total
     sim.current.stopL = pts.map(([sx, sy]) => {
       let best = 0
       let bestD = Infinity
@@ -131,28 +142,12 @@ export default function Journey({ stops }) {
 
   const readScroll = useCallback(() => {
     const v = viewRef.current
-    if (!v) return
-    setScroll({ left: v.scrollLeft, width: v.clientWidth, max: Math.max(1, v.scrollWidth - v.clientWidth) })
+    if (v) setScroll({ left: v.scrollLeft, max: Math.max(0, v.scrollWidth - v.clientWidth) })
   }, [])
-  useEffect(() => {
-    readScroll()
-    window.addEventListener('resize', readScroll)
-    return () => window.removeEventListener('resize', readScroll)
-  }, [readScroll, narrow])
+  useEffect(readScroll, [readScroll, trackW, frameW])
 
-  // the stop closest to the middle of the view
-  const nearest = useMemo(() => {
-    const mid = scroll.left + scroll.width / 2
-    let best = 0
-    pts.forEach(([x], i) => { if (Math.abs(x - mid) < Math.abs(pts[best][0] - mid)) best = i })
-    return best
-  }, [scroll, pts])
-  const current = active ?? nearest
-
-  // the duck walks the road towards the current stop, leaving footprints
-  useEffect(() => {
-    sim.current.target = current
-  }, [current])
+  // the duck walks the road to the selected stop; the road it has covered gets coloured in
+  useEffect(() => { sim.current.target = active }, [active])
   useEffect(() => {
     const path = roadRef.current
     if (!path) return
@@ -164,41 +159,44 @@ export default function Journey({ stops }) {
       raf = requestAnimationFrame(frame)
       const dt = Math.min(0.05, (now - last) / 1000)
       last = now
-      const goal = Math.max(0, (s.stopL[s.target] ?? 0) - 58)
+      const goal = Math.max(0, (s.stopL[s.target] ?? 0) - L.stop * 1.05)
       if (s.L == null || reduced) s.L = goal
       const diff = goal - s.L
       const moving = Math.abs(diff) > 1
-      if (moving) s.L += Math.sign(diff) * Math.min(Math.abs(diff), 240 * dt)
+      // quicker over long distances so a far jump never feels slow
+      if (moving) s.L += Math.sign(diff) * Math.min(Math.abs(diff), Math.max(260, Math.abs(diff) * 2.2) * dt)
       const p = path.getPointAtLength(s.L)
-      if (duckRef.current) duckRef.current.style.transform = `translate3d(${(p.x - duckW / 2).toFixed(1)}px, ${(p.y - L.duck + 14).toFixed(1)}px, 0)`
+      if (duckRef.current) duckRef.current.style.transform = `translate3d(${(p.x - duckW / 2).toFixed(1)}px, ${(p.y - L.duck + 12).toFixed(1)}px, 0)`
       if (duckFaceRef.current && moving) duckFaceRef.current.style.transform = `scaleX(${diff < 0 ? -1 : 1})`
       if (duckBodyRef.current) duckBodyRef.current.style.animationPlayState = moving ? 'running' : 'paused'
+      if (walkedRef.current) walkedRef.current.style.strokeDasharray = `${(s.L + L.stop).toFixed(1)} ${s.total}`
       if (moving && Math.abs(s.L - s.lastPrint) > 22) {
         s.lastPrint = s.L
         const id = ++s.id
-        setPrints((ps) => [...ps.slice(-16), { id, x: p.x, y: p.y + (id % 2 ? 6 : -2) }])
+        setPrints((ps) => [...ps.slice(-14), { id, x: p.x, y: p.y + (id % 2 ? 5 : -2) }])
       }
     }
     raf = requestAnimationFrame(frame)
     return () => cancelAnimationFrame(raf)
-  }, [d, duckW, L.duck])
+  }, [d, duckW, L.duck, L.stop])
 
-  // opening and closing a stop's card
-  const open = (i) => { clearTimeout(closeTimer.current); setActive(i) }
-  const closeSoon = () => { clearTimeout(closeTimer.current); closeTimer.current = setTimeout(() => setActive(null), 180) }
-  const isMouse = (e) => e.pointerType === 'mouse'
-
-  const scrollToStop = (i) => {
-    const v = viewRef.current
-    if (!v) return
+  const select = useCallback((i) => {
     const k = Math.max(0, Math.min(n - 1, i))
-    v.scrollTo({ left: pts[k][0] - v.clientWidth / 2, behavior: 'smooth' })
     setActive(k)
+    const v = viewRef.current
+    if (v && v.scrollWidth > v.clientWidth) v.scrollTo({ left: pts[k][0] - v.clientWidth / 2, behavior: 'smooth' })
+  }, [n, pts])
+
+  const onKeyDown = (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); select(active + 1) }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); select(active - 1) }
+    else if (e.key === 'Home') { e.preventDefault(); select(0) }
+    else if (e.key === 'End') { e.preventDefault(); select(n - 1) }
   }
 
-  // drag to scroll with a mouse
+  // drag to scroll with a mouse, only when the road is wider than the frame
   const onPointerDown = (e) => {
-    if (!isMouse(e) || e.button !== 0) return
+    if (e.pointerType !== 'mouse' || e.button !== 0 || scroll.max === 0) return
     drag.current = { x: e.clientX, left: viewRef.current.scrollLeft, moved: false }
   }
   const onPointerMove = (e) => {
@@ -218,87 +216,88 @@ export default function Journey({ stops }) {
     }
   }
 
-  const s = active != null ? stops[active] : null
-  let card = null
-  if (s) {
-    const [sx, sy] = pts[active]
-    const cw = L.card
-    const lo = scroll.left + 12
-    const hi = scroll.left + scroll.width - cw - 12
-    const left = Math.max(lo, Math.min(hi, sx - cw / 2))
-    const above = sy - L.stop / 2 - 22 - CARD_H >= 8
-    card = { s, left, above, sx, sy, cw, tail: Math.max(20, Math.min(cw - 20, sx - left)) }
-  }
+  const s = stops[active]
+  const chipBg = s.color === '#FFFFFF' || s.color === '#E8402A' ? '#FFD94A' : s.color
 
   return (
-    <div>
-      <div className="relative rounded-[18px] md:rounded-[24px] border-[2.5px] border-ink bg-map shadow-hard overflow-hidden">
+    <div
+      ref={frameRef}
+      className="rounded-[18px] md:rounded-[24px] border-[2.5px] border-ink bg-white shadow-hard overflow-hidden"
+      onKeyDown={onKeyDown}
+    >
+      {/* the map */}
+      <div className="relative bg-map">
         <div
           ref={viewRef}
           className="no-scrollbar overflow-x-auto overflow-y-hidden overscroll-x-contain"
-          onScroll={() => { setTouched(true); requestAnimationFrame(readScroll) }}
+          onScroll={() => requestAnimationFrame(readScroll)}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
           onPointerLeave={endDrag}
-          tabIndex={0}
-          aria-label="My journey map. Scroll sideways to follow the road."
         >
-          <div className="relative" style={{ width: trackW, height: L.vh }}>
+          <div className="relative" style={{ width: trackW, height: L.vh }} role="tablist" aria-label="Stops on my journey">
             <svg className="absolute inset-0" width={trackW} height={L.vh} viewBox={`0 0 ${trackW} ${L.vh}`} aria-hidden="true">
               <Scenery w={trackW} h={L.vh} pts={pts} narrow={narrow} />
               <path d={d} fill="none" stroke="var(--ink)" strokeWidth={L.road + 5} strokeLinecap="round" />
               <path d={d} fill="none" stroke="#F2D9A0" strokeWidth={L.road} strokeLinecap="round" />
-              <path ref={roadRef} d={d} fill="none" stroke="var(--ink)" strokeWidth="2" strokeDasharray="8 10" opacity=".5" />
+              <path ref={walkedRef} d={d} fill="none" stroke="#FFC93A" strokeWidth={L.road - 8} strokeLinecap="round" strokeDasharray="0 99999" />
+              <path ref={roadRef} d={d} fill="none" stroke="var(--ink)" strokeWidth="2" strokeDasharray="8 10" opacity=".45" />
             </svg>
 
-            {/* footprints */}
             {prints.map((p) => (
               <svg key={p.id} width="10" height="8" viewBox="0 0 10 8" className="absolute pointer-events-none" aria-hidden="true"
                 style={{ left: p.x - 5, top: p.y - 4, animation: 'footprint 2.4s ease-out forwards' }}
                 onAnimationEnd={() => setPrints((ps) => ps.filter((q) => q.id !== p.id))}>
-                <path d="M5 8 L0 0 M5 8 L5 0 M5 8 L10 0" fill="none" stroke="#FF9F1C" strokeWidth="2.2" strokeLinecap="round" />
+                <path d="M5 8 L0 0 M5 8 L5 0 M5 8 L10 0" fill="none" stroke="#E8402A" strokeWidth="2.2" strokeLinecap="round" />
               </svg>
             ))}
 
-            {/* stops */}
             {stops.map((st, i) => {
               const [sx, sy] = pts[i]
-              const below = narrow ? sy < L.vh - 90 : sy >= L.vh * 0.5
+              const below = sy >= mid
               const on = active === i
+              const done = i < active
               return (
                 <div key={i}>
                   <button
                     type="button"
-                    className="absolute z-10 grid place-items-center rounded-full border-[2.5px] border-ink shadow-lift transition-transform duration-300 ease-[cubic-bezier(.3,1.5,.5,1)] hover:scale-110"
-                    style={{ left: sx - L.stop / 2, top: sy - L.stop / 2, width: L.stop, height: L.stop, background: st.color, transform: on ? 'scale(1.1)' : undefined }}
+                    role="tab"
+                    aria-selected={on}
+                    aria-controls="journey-detail"
+                    tabIndex={on ? 0 : -1}
+                    onClick={() => select(i)}
+                    className="group absolute z-10 grid place-items-center rounded-full border-[2.5px] border-ink shadow-lift transition-transform duration-300 ease-[cubic-bezier(.3,1.5,.5,1)] hover:scale-110 cursor-pointer"
+                    style={{ left: sx - L.stop / 2, top: sy - L.stop / 2, width: L.stop, height: L.stop, background: st.color, transform: on ? 'scale(1.14)' : undefined }}
                     aria-label={`${st.date}: ${st.title}`}
-                    aria-expanded={on}
-                    onPointerEnter={(e) => isMouse(e) && open(i)}
-                    onPointerLeave={(e) => isMouse(e) && closeSoon()}
-                    onFocus={() => open(i)}
-                    onBlur={closeSoon}
-                    onClick={(e) => { if (e.nativeEvent.pointerType !== 'mouse') setActive((a) => (a === i ? null : i)) }}
                   >
-                    {on && <span className="absolute -inset-[11px] rounded-full border-2 border-dashed border-ink" aria-hidden="true" />}
+                    {on && <span className="absolute -inset-[10px] rounded-full border-2 border-dashed border-ink animate-[spin_14s_linear_infinite]" aria-hidden="true" />}
                     <svg viewBox="-16 -16 32 32" width={L.stop * 0.5} height={L.stop * 0.5} className="doodle-icon" style={{ strokeWidth: 2.2 }} aria-hidden="true">
                       <Doodle kind={st.icon} />
                     </svg>
+                    {done && (
+                      <span className="absolute -right-1 -top-1 grid place-items-center w-[18px] h-[18px] rounded-full bg-ink" aria-hidden="true">
+                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="#FFD94A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 4 L4 7 L9 1" /></svg>
+                      </span>
+                    )}
                   </button>
-                  {!on && (
-                    <div
-                      className="absolute z-[5] flex flex-col items-center gap-1 w-[160px] -translate-x-1/2 text-center pointer-events-none"
-                      style={below ? { left: sx, top: sy + L.stop / 2 + 10 } : { left: sx, bottom: L.vh - (sy - L.stop / 2 - 10) }}
-                    >
-                      <span className="chip border-[1.5px] px-2.5 py-0.5 text-[11px] font-bold">{st.date}</span>
-                      <span className="text-[13px] md:text-[15px] font-bold leading-tight">{st.title}</span>
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => select(i)}
+                    className="absolute z-[9] flex flex-col items-center gap-1 -translate-x-1/2 text-center cursor-pointer"
+                    style={{ width: Math.min(L.label, 2 * spacing - 18), left: sx, ...(below ? { top: sy + L.stop / 2 + 12 } : { bottom: L.vh - (sy - L.stop / 2 - 12) }) }}
+                    aria-hidden="true"
+                  >
+                    <span className={`chip border-[1.5px] px-2.5 py-0.5 text-[11px] font-bold transition-colors ${on ? 'bg-ink text-paper' : ''}`}>{st.date}</span>
+                    <span className={`text-[12.5px] md:text-[14.5px] font-bold leading-tight [text-shadow:0_0_4px_#FFF4D6,0_0_8px_#FFF4D6] ${on ? 'text-ink' : 'text-soft'}`}>
+                      {st.title}
+                    </span>
+                  </button>
                 </div>
               )
             })}
 
-            {/* the duck */}
             <div ref={duckRef} className="absolute left-0 top-0 z-[8] pointer-events-none will-change-transform" style={{ width: duckW }} aria-hidden="true">
               <div ref={duckFaceRef}>
                 <div ref={duckBodyRef} style={{ animation: 'waddle .45s ease-in-out infinite', transformOrigin: '50% 100%' }}>
@@ -306,77 +305,59 @@ export default function Journey({ stops }) {
                 </div>
               </div>
             </div>
-
-            {/* the opened stop */}
-            {card && (
-              <div
-                key={active}
-                className="absolute z-20"
-                style={{
-                  left: card.left,
-                  width: card.cw,
-                  ...(card.above ? { bottom: L.vh - (card.sy - L.stop / 2 - 20) } : { top: card.sy + L.stop / 2 + 20 }),
-                  transformOrigin: `${card.tail}px ${card.above ? '100%' : '0%'}`,
-                  animation: 'cardGrow .35s cubic-bezier(.3,1.4,.5,1) both',
-                }}
-                onPointerEnter={(e) => isMouse(e) && open(active)}
-                onPointerLeave={(e) => isMouse(e) && closeSoon()}
-                role="dialog"
-                aria-label={card.s.title}
-              >
-                <div className="relative rounded-[18px] border-[2.5px] border-ink bg-white p-5 shadow-hard">
-                  <div className="flex items-center gap-2">
-                    <span className="chip border-[1.5px] px-2.5 py-0.5 text-xs font-bold" style={{ background: card.s.color === '#FFFFFF' || card.s.color === '#E8402A' ? '#FFD94A' : card.s.color }}>
-                      {card.s.date}
-                    </span>
-                    {card.s.dummy && <span className="chip border border-muted px-2 py-0.5 text-[11px] text-muted">dummy</span>}
-                  </div>
-                  <h3 className="mt-2.5 font-display font-black text-[19px] md:text-[21px] leading-[1.15]">{card.s.title}</h3>
-                  <p className="mt-1 text-sm font-semibold text-accent">{card.s.org}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-soft">{card.s.description}</p>
-                  {card.s.tags.length > 0 && (
-                    <ul className="mt-3 flex flex-wrap gap-1.5">
-                      {card.s.tags.map((t) => <li key={t} className="chip border-[1.2px] bg-paper px-2 py-0.5 text-[11px]">{t}</li>)}
-                    </ul>
-                  )}
-                  {active === n - 1 && (
-                    <a href={`mailto:${EMAIL}`} className="btn btn-solid mt-4 h-11 text-sm">
-                      <DoodleIcon kind="plane" size={18} stroke="var(--paper)" className="btn-icon" /> Email me
-                    </a>
-                  )}
-                  <span
-                    className={`absolute w-4 h-4 bg-white border-ink -translate-x-1/2 rotate-45 ${card.above ? '-bottom-[9.5px] border-r-[2.5px] border-b-[2.5px]' : '-top-[9.5px] border-l-[2.5px] border-t-[2.5px]'}`}
-                    style={{ left: card.tail }}
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* edge fades + hint */}
-        <div className={`pointer-events-none absolute inset-y-0 left-0 w-14 bg-gradient-to-r from-map to-transparent transition-opacity ${scroll.left > 4 ? 'opacity-100' : 'opacity-0'}`} />
-        <div className={`pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-map to-transparent transition-opacity ${scroll.left < scroll.max - 4 ? 'opacity-100' : 'opacity-0'}`} />
-        <span className={`pointer-events-none absolute left-4 bottom-4 chip border-[1.5px] px-3 py-1 text-xs font-bold transition-opacity duration-500 ${touched ? 'opacity-0' : 'opacity-100'}`}>
-          {narrow ? 'swipe sideways →' : 'scroll sideways →'}
-        </span>
+        {scroll.max > 0 && (
+          <>
+            <div className={`pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-map to-transparent transition-opacity ${scroll.left > 4 ? 'opacity-100' : 'opacity-0'}`} />
+            <div className={`pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-map to-transparent transition-opacity ${scroll.left < scroll.max - 4 ? 'opacity-100' : 'opacity-0'}`} />
+          </>
+        )}
       </div>
 
-      {/* controls */}
-      <div className="mt-6 flex items-center gap-2.5">
-        <button type="button" onClick={() => scrollToStop(current - 1)} disabled={current === 0}
-          className="grid place-items-center w-11 h-11 rounded-full border-2 border-ink bg-white shadow-lift-sm disabled:opacity-40 hover:-translate-y-0.5 transition-transform" aria-label="Previous stop">
-          <svg width="9" height="16" viewBox="0 0 9 16" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M8 1 L1 8 L8 15" /></svg>
-        </button>
-        <button type="button" onClick={() => scrollToStop(current + 1)} disabled={current === n - 1}
-          className="grid place-items-center w-11 h-11 rounded-full border-2 border-ink bg-ink text-paper shadow-[0_3px_0_#E8402A] disabled:opacity-40 hover:-translate-y-0.5 transition-transform" aria-label="Next stop">
-          <svg width="9" height="16" viewBox="0 0 9 16" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M1 1 L8 8 L1 15" /></svg>
-        </button>
-        <div className="ml-4 w-[clamp(140px,18vw,260px)] h-2 rounded-full border-[1.5px] border-ink bg-white overflow-hidden" aria-hidden="true">
-          <div className="h-full rounded-full bg-sun border-r-[1.5px] border-ink transition-[width] duration-150" style={{ width: `${Math.max(8, (scroll.left / scroll.max) * 100)}%` }} />
+      {/* the selected stop, always readable */}
+      <div id="journey-detail" role="tabpanel" aria-live="polite" className="border-t-[2.5px] border-ink px-5 py-5 md:px-8 md:py-6">
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between md:gap-10">
+          <div key={active} className="min-w-0 flex-1 fade-in md:min-h-[112px]">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="chip border-[1.5px] px-2.5 py-0.5 text-xs font-bold" style={{ background: chipBg }}>{s.period || s.date}</span>
+              <span className="text-xs font-bold uppercase tracking-[.12em] text-muted">Stop {active + 1} of {n}</span>
+            </div>
+            <h3 className="mt-2.5 font-display font-black text-[22px] md:text-[28px] leading-[1.1] tracking-[-0.01em]">{s.role || s.title}</h3>
+            <p className="mt-1 text-sm md:text-[15px] font-semibold text-accent">{s.org}</p>
+            <p className="mt-2 max-w-[640px] text-[15px] leading-relaxed text-soft">{s.description}</p>
+            {(s.tags.length > 0 || active === n - 1) && (
+              <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                {s.tags.map((t) => <span key={t} className="chip border-[1.2px] bg-paper px-2.5 py-0.5 text-xs">{t}</span>)}
+                {active === n - 1 && (
+                  <a href={`mailto:${EMAIL}`} className="btn btn-solid h-11 text-sm">
+                    <DoodleIcon kind="plane" size={18} stroke="var(--paper)" className="btn-icon" /> Email me
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-end gap-4 md:flex-col md:items-end">
+            <div className="hidden md:flex items-center gap-1.5" aria-hidden="true">
+              {stops.map((st, i) => (
+                <button key={i} type="button" tabIndex={-1} onClick={() => select(i)}
+                  className={`h-2.5 rounded-full border-[1.5px] border-ink transition-all duration-300 ${i === active ? 'w-7 bg-sun' : i < active ? 'w-2.5 bg-ink' : 'w-2.5 bg-white'}`} />
+              ))}
+            </div>
+            <div className="flex items-center gap-2.5">
+              <button type="button" onClick={() => select(active - 1)} disabled={active === 0}
+                className="grid place-items-center w-11 h-11 rounded-full border-2 border-ink bg-white shadow-lift-sm disabled:opacity-40 enabled:hover:-translate-y-0.5 transition-transform" aria-label="Previous stop">
+                <Chevron dir={-1} />
+              </button>
+              <button type="button" onClick={() => select(active + 1)} disabled={active === n - 1}
+                className="flex items-center gap-2 h-11 pl-4 pr-3.5 rounded-full border-2 border-ink bg-ink text-paper text-sm font-bold shadow-[0_3px_0_#E8402A] disabled:opacity-40 enabled:hover:-translate-y-0.5 transition-transform" aria-label="Next stop">
+                Next <Chevron dir={1} />
+              </button>
+            </div>
+          </div>
         </div>
-        <span className="ml-2 text-sm font-bold tabular-nums" aria-live="polite">{current + 1} / {n}</span>
       </div>
     </div>
   )

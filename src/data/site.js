@@ -18,4 +18,5 @@ export const CATEGORY_STYLE = {
   AI: 'bg-sun text-ink',
   'Web App': 'bg-accent text-white',
   Game: 'bg-[#8FDCFF] text-ink',
+  'Data Science': 'bg-sky text-ink',
 }
