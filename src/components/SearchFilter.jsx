@@ -1,146 +1,114 @@
-import { useState, useRef, useEffect } from 'react';
-import { Search, X, SlidersHorizontal, ChevronDown, Check } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react'
 
-function Dropdown({ value, options, onChange, id }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+function SortMenu({ value, options, onChange }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
 
   useEffect(() => {
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
+    const close = (e) => ref.current && !ref.current.contains(e.target) && setOpen(false)
+    document.addEventListener('mousedown', close)
+    return () => document.removeEventListener('mousedown', close)
+  }, [])
 
-  const selected = options.find((o) => o.value === value);
-
+  const selected = options.find((o) => o.value === value)
   return (
     <div ref={ref} className="relative">
       <button
-        id={id}
         type="button"
-        onClick={() => setOpen((p) => !p)}
-        className={`flex items-center gap-2 px-3 py-1.5 border-2 rounded-lg bg-white text-sm font-medium text-[#2C3E50] transition-all duration-200 min-w-[110px] ${
-          open ? 'border-[#FFB27D] shadow-sm' : 'border-[#E0F4EA] hover:border-[#FFD6B8]'
-        }`}
+        id="sort-select"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="inline-flex items-center gap-2.5 h-11 pl-[18px] pr-4 rounded-full border-2 border-ink bg-white font-semibold text-[15px] shadow-lift-sm"
       >
-        <span className="flex-1 text-left">{selected?.label}</span>
-        <ChevronDown
-          size={14}
-          className={`text-[#FFB27D] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        />
+        {selected?.label}
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"
+          className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden="true">
+          <path d="M1 1 L6 6 L11 1" />
+        </svg>
       </button>
-
-      {/* Dropdown panel */}
-      <div
-        className={`absolute left-0 top-[calc(100%+6px)] z-50 bg-white border border-[#FFD6B8] rounded-xl shadow-lg overflow-hidden transition-all duration-200 origin-top ${
-          open ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 -translate-y-1 pointer-events-none'
+      <ul
+        role="listbox"
+        className={`absolute right-0 top-[calc(100%+8px)] z-30 min-w-full rounded-2xl border-2 border-ink bg-white p-1.5 shadow-hard-sm origin-top transition-all duration-200 ${
+          open ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
         }`}
-        style={{ minWidth: '100%' }}
       >
-        {options.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => { onChange(opt.value); setOpen(false); }}
-            className={`flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors duration-150 ${
-              opt.value === value
-                ? 'bg-[#FFF2E8] text-[#E67E4D] font-semibold'
-                : 'text-[#2C3E50] hover:bg-[#FFF8F4]'
-            }`}
-          >
-            <Check size={12} className={opt.value === value ? 'opacity-100 text-[#E67E4D]' : 'opacity-0'} />
-            {opt.label}
-          </button>
+        {options.map((o) => (
+          <li key={o.value}>
+            <button
+              type="button"
+              role="option"
+              aria-selected={o.value === value}
+              onClick={() => { onChange(o.value); setOpen(false) }}
+              className={`w-full whitespace-nowrap rounded-xl px-3.5 py-2 text-left text-sm font-semibold ${o.value === value ? 'bg-sun' : 'hover:bg-paper'}`}
+            >
+              {o.label}
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
-  );
+  )
 }
 
-export default function SearchFilter({
-  searchQuery,
-  selectedCategory,
-  sortBy,
-  categories,
-  onSearch,
-  onFilter,
-  onSort,
-  onClear,
-  projectCount,
-}) {
-  const hasFilters = searchQuery || selectedCategory !== 'All';
-
-  const categoryOptions = categories.map((cat) => ({ value: cat, label: cat }));
-  const sortOptions = [
-    { value: 'newest', label: 'Newest' },
-    { value: 'oldest', label: 'Oldest' },
-  ];
-
+export default function SearchFilter({ searchQuery, selectedCategory, sortBy, categories, onSearch, onFilter, onSort, onClear, projectCount }) {
+  const hasFilters = searchQuery || selectedCategory !== 'All'
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-50">
-      {/* Search bar */}
-      <div className="mb-5 relative">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
-        <input
-          type="text"
-          id="project-search"
-          placeholder="Search by name, description, or technology..."
-          value={searchQuery}
-          onChange={(e) => onSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 border-2 border-[#E0F4EA] rounded-lg focus:outline-none focus:border-[#FFB27D] transition-colors text-[#2C3E50] text-sm placeholder-gray-300"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => onSearch('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition"
-          >
-            <X size={16} />
-          </button>
-        )}
-      </div>
-
-      {/* Filters row */}
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex items-center gap-2">
-          <SlidersHorizontal size={16} className="text-[#FFB27D]" />
-          <label htmlFor="category-filter" className="text-sm font-semibold text-[#2C3E50]">
-            Category
-          </label>
-          <Dropdown
-            id="category-filter"
-            value={selectedCategory}
-            options={categoryOptions}
-            onChange={onFilter}
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-3.5">
+        <label className="relative flex items-center w-full lg:w-[440px] h-[52px] rounded-full border-[2.5px] border-ink bg-white shadow-lift-sm focus-within:shadow-lift">
+          <svg className="absolute left-5" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+            <circle cx="8.5" cy="8.5" r="6.5" />
+            <path d="M13.5 13.5 L18 18" />
+          </svg>
+          <span className="sr-only">Search projects</span>
+          <input
+            id="project-search"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => onSearch(e.target.value)}
+            placeholder="Search title, description or tech…"
+            className="w-full h-full bg-transparent rounded-full pl-[52px] pr-10 text-[15px] placeholder:text-muted focus:outline-none"
           />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label htmlFor="sort-select" className="text-sm font-semibold text-[#2C3E50]">
-            Sort
-          </label>
-          <Dropdown
-            id="sort-select"
-            value={sortBy}
-            options={sortOptions}
-            onChange={onSort}
-          />
-        </div>
-
-        <div className="ml-auto flex items-center gap-4">
-          <span className="text-sm font-medium text-gray-400">
-            <span className="text-[#2C3E50] font-bold">{projectCount}</span> result{projectCount !== 1 ? 's' : ''}
-          </span>
-          {hasFilters && (
-            <button
-              onClick={onClear}
-              className="flex items-center gap-1.5 text-sm text-[#FFB27D] hover:text-[#E67E4D] font-semibold transition"
-            >
-              <X size={14} />
-              Clear filters
+          {searchQuery && (
+            <button type="button" onClick={() => onSearch('')} aria-label="Clear search" className="absolute right-4 text-muted hover:text-ink">
+              <svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M2 2 L12 12 M12 2 L2 12" /></svg>
             </button>
           )}
+        </label>
+
+        <div className="flex flex-wrap items-center gap-2.5 lg:ml-3" role="group" aria-label="Category">
+          {categories.map((c) => {
+            const on = c === selectedCategory
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => onFilter(c)}
+                aria-pressed={on}
+                className={`h-11 px-[18px] rounded-full border-2 border-ink text-[15px] font-semibold transition-transform duration-200 hover:-translate-y-0.5 ${
+                  on ? 'bg-ink text-paper shadow-[0_3px_0_#E8402A]' : 'bg-white shadow-lift-sm'
+                }`}
+              >
+                {c}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="lg:ml-auto">
+          <SortMenu value={sortBy} onChange={onSort} options={[{ value: 'newest', label: 'Newest first' }, { value: 'oldest', label: 'Oldest first' }]} />
         </div>
       </div>
+
+      <div className="flex items-center gap-4 text-sm font-medium text-muted">
+        <span>
+          Showing <span className="font-bold text-ink">{projectCount}</span> project{projectCount !== 1 ? 's' : ''}
+        </span>
+        {hasFilters && (
+          <button type="button" onClick={onClear} className="font-bold text-accent hover:underline">Clear filters</button>
+        )}
+      </div>
     </div>
-  );
+  )
 }

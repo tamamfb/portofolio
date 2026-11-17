@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Personal CV (Typst source), kept out of the repo
+CV/

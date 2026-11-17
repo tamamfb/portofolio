@@ -1,18 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --paper: #FFFBF0;
+  --ink: #141414;
+  --soft: #4A4A4A;
+  --muted: #7A7468;
+  --accent: #E8402A;
+  --sun: #FFD94A;
+  /* one page gutter everywhere: 96px at 1440 wide, 20px on phones */
+  --gutter: clamp(20px, 6.6vw, 96px);
+}
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #FFFBF0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 @layer components {
+  .page {
+    @apply w-full max-w-page mx-auto;
+    padding-inline: var(--gutter);
+  }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -27,79 +46,112 @@ body {
     overflow: hidden;
   }
 
-  .btn-primary {
-    @apply px-6 py-3 bg-[#FFB27D] text-[#2C3E50] rounded-lg font-semibold hover:bg-[#FFA566] transition-all duration-300 hover:shadow-md hover:-translate-y-0.5;
+  /* display type */
+  .h-display {
+    @apply font-display text-ink;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
 
-  .btn-secondary {
-    @apply px-6 py-3 border-2 border-[#FFB27D] text-[#2C3E50] rounded-lg font-semibold hover:bg-[#FFD6B8] transition-all duration-300 hover:shadow-md hover:-translate-y-0.5;
+  /* hand-drawn card: thick ink border + hard offset shadow */
+  .ink-card {
+    @apply bg-white border-[2.5px] border-ink rounded-[20px] shadow-hard;
   }
 
-  .card {
-    @apply bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300;
+  /* buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2.5 h-[52px] pl-5 pr-6 rounded-full border-[2.5px] border-ink
+      font-bold text-base whitespace-nowrap select-none;
+    transition: transform .18s cubic-bezier(.3,1.4,.5,1), box-shadow .18s cubic-bezier(.3,1.4,.5,1);
+  }
+  .btn:hover { transform: translateY(-2px) rotate(-1.2deg); }
+  .btn:active { transform: translateY(2px); transition-duration: .06s; }
+  .btn-solid { @apply bg-ink text-paper shadow-lift-accent; }
+  .btn-solid:hover { box-shadow: 0 6px 0 var(--accent); }
+  .btn-solid:active { box-shadow: 0 1px 0 var(--accent); }
+  .btn-outline { @apply bg-paper text-ink shadow-lift; }
+  .btn-outline:hover { box-shadow: 0 6px 0 var(--ink); }
+  .btn-outline:active { box-shadow: 0 1px 0 var(--ink); }
+  .btn:hover .btn-icon { animation: wiggle .5s ease-in-out; }
+
+  /* pill chips */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white font-semibold whitespace-nowrap;
+  }
+
+  /* little section sticker: "● About me" */
+  .label-chip {
+    @apply inline-flex items-center gap-2 rounded-full border-2 border-ink px-3.5 py-1.5 text-[13px] font-bold;
+    transform: rotate(-2deg);
+  }
+  .label-chip::before {
+    content: '';
+    @apply block w-2 h-2 rounded-full bg-ink;
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ---- the doodle art: one set of classes for every character on the site ---- */
+.doodle-art {
+  fill: var(--art-bg, #FFFBF0);
+  stroke: var(--art-ink, #141414);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.doodle-art .n { fill: none; }
+.doodle-art .k { fill: var(--art-ink, #141414); }
+.doodle-art .a { fill: var(--art-accent, #E8402A); }
+.doodle-art .o { fill: #FF9F1C; }
+.doodle-art .r { fill: #FF4D4D; }
+.doodle-art .y { fill: #FFD94A; }
+.doodle-art .crust { fill: #F2C48D; }
+.doodle-art .thin { stroke-width: 1.5; }
+.doodle-art .thick { stroke-width: 3.4; }
+.doodle-art .glint { fill: var(--art-bg, #FFFBF0); stroke: none; }
+.doodle-art .shadow { fill: var(--art-ink, #141414); stroke: none; opacity: .14; }
+
+.doodle-icon {
+  stroke: var(--ink);
+  stroke-width: 1.9;
+  stroke-linejoin: round;
+  stroke-linecap: round;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ---- motion ---- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes wiggle { 0%, 100% { transform: none; } 30% { transform: rotate(-14deg) scale(1.15); } 60% { transform: rotate(10deg); } }
+@keyframes hop { 0% { transform: none; } 18% { transform: scale(1.12, .84); } 45% { transform: translateY(-34%) scale(.94, 1.08); } 72% { transform: translateY(0) scale(1.1, .88); } 86% { transform: scale(.97, 1.03); } 100% { transform: none; } }
+@keyframes peck { 0%, 100% { transform: none; } 30% { transform: rotate(16deg) translateY(2px); } 45% { transform: none; } 65% { transform: rotate(14deg) translateY(2px); } }
+@keyframes waddle { 0%, 100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(3deg) translateY(-3%); } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes footprint { 0% { opacity: .75; } 100% { opacity: 0; } }
+@keyframes bubbleIn { from { opacity: 0; transform: translate(-50%, 6px) scale(.6) rotate(-2deg); } to { opacity: 1; transform: translate(-50%, 0) scale(1) rotate(-2deg); } }
+@keyframes cardGrow { from { opacity: 0; transform: scale(.55); } to { opacity: 1; transform: scale(1); } }
+@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-8px) rotate(calc(var(--r, 0deg) + 6deg)); } }
+
+.fade-in { animation: fadeIn .35s ease-out both; }
+.slide-up { animation: slideUp .55s cubic-bezier(.2,.8,.3,1) both; }
+.floaty { animation: floaty 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-delay: 0s !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
 
-@keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.7; }
-}
-
-.fade-in {
-  animation: fadeIn 0.35s ease-out both;
-}
-
-.slide-up {
-  animation: slideUp 0.5s ease-out both;
-}
-
-.fade-in-up {
-  opacity: 0;
-  animation: slideUp 0.45s ease-out forwards;
-}
-
+/* the duck cursor replaces the system one on real pointers */
 @media (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
+  * { cursor: none !important; }
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #FFFBF0; }
-::-webkit-scrollbar-thumb { background: #FFB27D; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #FFA566; }
+/* scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb { background: var(--sun); border: 2px solid var(--ink); border-radius: 999px; }
 
-@keyframes driftBg {
-  0%   { background-position: 0 0; }
-  100% { background-position: 100px 100px; }
-}
+/* hide the native bar on the journey track; it has its own controls */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
-.duck-bg {
-  animation: driftBg 8s linear infinite;
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-marquee {
-  animation: marquee 35s linear infinite;
-  display: flex;
-  width: max-content;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
+:focus-visible { outline: 2px dashed var(--ink); outline-offset: 4px; border-radius: 6px; }

@@ -1,0 +1,72 @@
+[
+  {
+    "date": "Aug 2023",
+    "title": "Started CS at ITS",
+    "org": "Institut Teknologi Sepuluh Nopember",
+    "description": "Bachelor's in Computer Science, Surabaya. GPA 3.79 / 4.00 so far.",
+    "tags": ["GPA 3.79"],
+    "icon": "flag",
+    "color": "#FFD94A",
+    "dummy": false
+  },
+  {
+    "date": "Feb 2024",
+    "title": "Joined the AI lab",
+    "org": "Student research group",
+    "description": "Paper-reading Fridays, model-breaking weekends.",
+    "tags": ["Research", "Deep learning"],
+    "icon": "sparkle",
+    "color": "#CDEFFF",
+    "dummy": true
+  },
+  {
+    "date": "Aug 2024",
+    "title": "Teaching assistant",
+    "org": "Data Structures course",
+    "description": "Helped 60+ students debug their linked lists.",
+    "tags": ["Teaching", "C++"],
+    "icon": "heart",
+    "color": "#FFD6DE",
+    "dummy": true
+  },
+  {
+    "date": "Feb 2025",
+    "title": "Data science intern",
+    "org": "Company name",
+    "description": "Dashboards and churn models on real customer data.",
+    "tags": ["Pandas", "SQL"],
+    "icon": "chart",
+    "color": "#FFD94A",
+    "dummy": true
+  },
+  {
+    "date": "Sep 2025",
+    "title": "Research collaboration",
+    "org": "PT Sentra Vidya Utama (SEVIMA)",
+    "description": "Multimodal AI for interview training: facial cues, engagement and adaptive questions.",
+    "tags": ["PyTorch", "Computer vision", "NLP"],
+    "icon": "bolt",
+    "color": "#FFFFFF",
+    "dummy": false
+  },
+  {
+    "date": "Mar 2026",
+    "title": "AI engineer intern",
+    "org": "Company name",
+    "description": "Took an LLM feature from notebook to production API.",
+    "tags": ["LLMs", "FastAPI"],
+    "icon": "star",
+    "color": "#CDEFFF",
+    "dummy": true
+  },
+  {
+    "date": "Next",
+    "title": "Your team?",
+    "org": "Open to AI, data & software roles",
+    "description": "Let's talk.",
+    "tags": [],
+    "icon": "plane",
+    "color": "#E8402A",
+    "dummy": false
+  }
+]

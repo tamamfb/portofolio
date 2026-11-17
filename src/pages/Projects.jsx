@@ -1,114 +1,103 @@
-import { useState, useEffect } from 'react';
-import ProjectCard from '../components/ProjectCard';
-import ProjectModal from '../components/ProjectModal';
-import SearchFilter from '../components/SearchFilter';
-import projectsData from '../data/projects.json';
+import { useMemo, useState } from 'react'
+import ProjectCard from '../components/ProjectCard'
+import ProjectModal from '../components/ProjectModal'
+import SearchFilter from '../components/SearchFilter'
+import Crew from '../components/doodle/Crew'
+import { DoodleIcon, Squiggle } from '../components/doodle/art'
+import projectsData from '../data/projects.json'
+
+const PAGE = 9
 
 export default function Projects() {
-  const [projects] = useState(projectsData);
-  const [filteredProjects, setFilteredProjects] = useState(projectsData);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState('newest');
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('All')
+  const [sortBy, setSortBy] = useState('newest')
+  const [selectedProject, setSelectedProject] = useState(null)
+  const [shown, setShown] = useState(PAGE)
 
-  const categories = ['All', ...new Set(projects.map((p) => p.category))];
+  const categories = useMemo(() => ['All', ...new Set(projectsData.map((p) => p.category))], [])
 
-  useEffect(() => {
-    let filtered = [...projects];
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (p) =>
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    const list = projectsData.filter(
+      (p) =>
+        (selectedCategory === 'All' || p.category === selectedCategory) &&
+        (!q ||
           p.title.toLowerCase().includes(q) ||
           p.description.toLowerCase().includes(q) ||
-          p.technologies.some((t) => t.toLowerCase().includes(q))
-      );
-    }
+          p.technologies.some((t) => t.toLowerCase().includes(q))),
+    )
+    return list.sort((a, b) => (sortBy === 'oldest' ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date)))
+  }, [searchQuery, selectedCategory, sortBy])
 
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
-    }
+  const clear = () => {
+    setSearchQuery('')
+    setSelectedCategory('All')
+    setSortBy('newest')
+  }
 
-    if (sortBy === 'newest') {
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } else if (sortBy === 'oldest') {
-      filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
-
-    setFilteredProjects(filtered);
-  }, [searchQuery, selectedCategory, sortBy, projects]);
-
-  const handleClear = () => {
-    setSearchQuery('');
-    setSelectedCategory('All');
-    setSortBy('newest');
-  };
+  const visible = filtered.slice(0, shown)
+  const rest = filtered.length - visible.length
 
   return (
-    <div className="max-w-6xl mx-auto px-6 md:px-16 py-16">
-
-      {/* Header */}
-      <div className="mb-12 slide-up">
-        <div className="inline-flex items-center gap-2 bg-[#FFF2E8] border border-[#FFD6B8] rounded-full px-3 py-1 mb-4">
-          <span className="w-2 h-2 rounded-full bg-[#FFB27D]" />
-          <span className="text-xs font-bold text-[#E67E4D] uppercase tracking-wider">My Work</span>
-        </div>
-        <h1 className="text-5xl font-extrabold text-[#2C3E50] mb-3">Projects</h1>
-        <p className="text-gray-400 text-lg">
-          A collection of things I've built — from hobby projects to production apps.
+    <div className="page pt-[clamp(44px,5vw,68px)] pb-[clamp(80px,9vw,140px)]">
+      {/* header */}
+      <header className="relative slide-up">
+        <span className="label-chip bg-sun">My work</span>
+        <h1 className="h-display mt-4 text-[clamp(64px,7.2vw,104px)]">Projects</h1>
+        <Squiggle className="mt-2 h-2.5 w-[clamp(220px,25vw,360px)]" strokeWidth={4} />
+        <p className="mt-6 max-w-[760px] font-serif italic text-[clamp(20px,1.8vw,26px)] leading-[1.3] text-soft">
+          A collection of things I've built, from research models to production-ish web apps.
         </p>
-      </div>
+        <div className="hidden md:block absolute right-[4%] bottom-0" aria-hidden="true">
+          <Crew kind="cat" height={150} flip look={{ x: -0.8, y: 0.2 }} />
+          <DoodleIcon kind="star" size={36} className="floaty absolute -right-14 -top-6" style={{ '--r': '12deg' }} />
+          <DoodleIcon kind="sparkle" size={30} className="floaty absolute -left-20 top-2" style={{ animationDelay: '-1.5s' }} />
+        </div>
+      </header>
 
-      {/* Search & Filter */}
-      <div className="fade-in relative z-10" style={{ animationDelay: '0.15s' }}>
+      <div className="relative z-20 mt-12 fade-in" style={{ animationDelay: '.12s' }}>
         <SearchFilter
           searchQuery={searchQuery}
           selectedCategory={selectedCategory}
           sortBy={sortBy}
           categories={categories}
-          onSearch={setSearchQuery}
-          onFilter={setSelectedCategory}
+          onSearch={(v) => { setSearchQuery(v); setShown(PAGE) }}
+          onFilter={(v) => { setSelectedCategory(v); setShown(PAGE) }}
           onSort={setSortBy}
-          onClear={handleClear}
-          projectCount={filteredProjects.length}
+          onClear={clear}
+          projectCount={filtered.length}
         />
       </div>
 
-      {/* Cards */}
-      {filteredProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project, idx) => (
-            <div
-              key={project.id}
-              className="fade-in-up h-full"
-              style={{ animationDelay: `${0.2 + idx * 0.08}s` }}
-            >
-              <ProjectCard
-                project={project}
-                onClick={() => setSelectedProject(project)}
-              />
+      {visible.length > 0 ? (
+        <>
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-9">
+            {visible.map((p, i) => (
+              <div key={p.id} className="slide-up" style={{ animationDelay: `${0.15 + i * 0.06}s` }}>
+                <ProjectCard project={p} index={i} onClick={() => setSelectedProject(p)} />
+              </div>
+            ))}
+          </div>
+          {rest > 0 && (
+            <div className="mt-14 flex justify-center">
+              <button type="button" className="btn btn-outline" onClick={() => setShown((s) => s + PAGE)}>
+                <DoodleIcon kind="sparkle" size={20} className="btn-icon" />
+                Show {rest} more
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
-        <div className="text-center py-20 fade-in">
-          <div className="text-6xl mb-4">🔍</div>
-          <p className="text-xl font-semibold text-gray-400 mb-2">No projects found</p>
-          <p className="text-sm text-gray-300">Try adjusting your search or filters</p>
-          <button onClick={handleClear} className="mt-6 btn-primary text-sm">
-            Clear filters
-          </button>
+        <div className="mt-14 flex flex-col items-center text-center fade-in">
+          <Crew kind="ghost" height={130} />
+          <p className="mt-5 font-display font-black text-2xl">Nothing here, boo.</p>
+          <p className="mt-2 text-soft">Try another search or category.</p>
+          <button type="button" onClick={clear} className="btn btn-solid mt-6">Clear filters</button>
         </div>
       )}
 
-      {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
+      {selectedProject && <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />}
     </div>
-  );
+  )
 }

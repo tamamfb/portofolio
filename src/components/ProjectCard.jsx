@@ -1,66 +1,57 @@
-import { ExternalLink } from 'lucide-react';
-import { getProjectImages } from '../data/projectImages';
+import { getProjectImages } from '../data/projectImages'
+import DoodleCover from './DoodleCover'
+import { DoodleIcon } from './doodle/art'
+import { CATEGORY_STYLE, fmtDate } from '../data/site'
 
-export default function ProjectCard({ project, onClick }) {
-  const localImages = getProjectImages(project.imageFolder);
-  const thumbnail = localImages.length > 0 ? localImages[0] : project.image;
+// tiny tilts so a grid of cards looks pinned up by hand
+const TILTS = [-0.7, 0.4, -0.3, 0.6, -0.5, 0.3, -0.4, 0.7, -0.6]
+
+export default function ProjectCard({ project, onClick, index = 0, titleSize = 'text-2xl' }) {
+  const images = getProjectImages(project.imageFolder)
+  const cover = images[0]
+  const tilt = TILTS[index % TILTS.length]
 
   return (
-    <div
+    <article
       onClick={onClick}
-      className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-1 flex flex-col h-full"
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), onClick())}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      aria-label={`${project.title}: open details`}
+      className="group ink-card h-full flex flex-col p-3.5 transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.3,1.4,.5,1)] rotate-[var(--tilt)] hover:rotate-0 hover:-translate-y-1.5 hover:shadow-hard-lg"
+      style={{ '--tilt': `${tilt}deg` }}
     >
-      {/* Image */}
-      <div className="relative overflow-hidden h-48 flex-shrink-0">
-        <img
-          src={thumbnail}
-          alt={project.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-end p-3">
-          <div className="bg-white/90 text-[#2C3E50] px-2 py-1 rounded-lg text-xs font-semibold flex items-center gap-1">
-            <ExternalLink size={12} /> View Details
-          </div>
-        </div>
+      <div className="relative aspect-[16/9.4] overflow-hidden rounded-xl border-2 border-ink bg-sun">
+        {cover ? (
+          <img src={cover} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        ) : (
+          <DoodleCover />
+        )}
+        <span
+          className={`absolute left-3 top-3 -rotate-[4deg] rounded-full border-2 border-ink px-3 py-1 text-xs font-bold shadow-[2px_2px_0_#141414] ${CATEGORY_STYLE[project.category] || 'bg-white'}`}
+        >
+          {project.category}
+        </span>
       </div>
 
-      {/* Content */}
-      <div className="p-5 flex flex-col flex-grow">
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-bold text-[#2C3E50] leading-snug group-hover:text-[#E67E4D] transition-colors">
-            {project.title}
-          </h3>
-          <span className="ml-2 flex-shrink-0 inline-block bg-[#FFF2E8] text-[#E67E4D] border border-[#FFD6B8] px-2 py-0.5 rounded-full text-xs font-semibold">
-            {project.category}
+      <div className="flex-1 flex flex-col px-2.5 pt-5 pb-2">
+        <div className="flex items-start justify-between gap-4">
+          <h3 className={`font-display font-black ${titleSize} leading-[1.1] tracking-[-0.01em] line-clamp-2`}>{project.title}</h3>
+          <span className="shrink-0 pt-1 text-[13px] font-medium text-muted">{fmtDate(project.date)}</span>
+        </div>
+        <p className="mt-2.5 text-[15px] leading-relaxed text-soft line-clamp-2">{project.description}</p>
+
+        <div className="mt-auto pt-5 flex items-end justify-between gap-3">
+          <ul className="flex flex-wrap gap-1.5 h-[26px] overflow-hidden" aria-label="Technologies">
+            {project.technologies.slice(0, 4).map((t) => (
+              <li key={t} className="chip border-[1.5px] bg-paper px-2.5 py-[3px] text-xs">{t}</li>
+            ))}
+          </ul>
+          <span className="shrink-0 grid place-items-center w-11 h-11 rounded-full bg-ink shadow-[0_3px_0_#E8402A] transition-transform duration-300 group-hover:translate-x-1 group-hover:-rotate-12" aria-hidden="true">
+            <DoodleIcon kind="arrow" size={24} stroke="var(--paper)" />
           </span>
         </div>
-
-        <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">
-          {project.description}
-        </p>
-
-        <div className="flex flex-wrap gap-1.5 mt-auto">
-          {project.technologies.slice(0, 4).map((tech, idx) => (
-            <span
-              key={idx}
-              className="bg-[#FFF8F4] text-[#2C3E50] border border-[#FFE8D6] px-2 py-0.5 rounded-md text-xs font-medium"
-            >
-              {tech}
-            </span>
-          ))}
-          {project.technologies.length > 4 && (
-            <span className="bg-gray-50 text-gray-400 border border-gray-100 px-2 py-0.5 rounded-md text-xs font-medium">
-              +{project.technologies.length - 4}
-            </span>
-          )}
-        </div>
       </div>
-
-      {/* Bottom accent bar — always at the very bottom */}
-      <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-[#FFB27D] to-[#FFC499] transition-all duration-500 rounded-b-xl flex-shrink-0" />
-    </div>
-  );
+    </article>
+  )
 }

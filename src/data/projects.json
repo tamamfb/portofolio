@@ -21,21 +21,24 @@
     "featured": true,
     "date": "2026-03-01"
   },
-  {
+    {
     "id": 2,
-    "title": "AI Interview Training System",
-    "description": "Multimodal AI system for interactive interview training — facial expression analysis and adaptive question generation.",
-    "fullDescription": "A research collaboration with a lecturer at PT Sentra Vidya Utama (SEVIMA). Handled video/image data to detect facial liveness, track expressions, and analyze engagement in real time. Contributed to orchestrating multiple data streams (video, audio, text) and built an adaptive module that generates interview questions tailored to individual user profiles.",
+    "title": "KarirLink: Interview Answer Consistency Audit",
+    "description": "Veracity Audit module for an AI interview-practice platform: checks whether a candidate's answers stay consistent, claim by claim, with quotes as proof.",
+    "fullDescription": "KarirLink (CLAIR) is an AI job-interview simulator built by SEVIMA and PENS for fresh graduates. I own its Veracity Audit module: a FastAPI service that turns practice-interview answers, typed or transcribed by Whisper, into claim-level credibility coaching. It extracts measurable facts tied to named entities, cross-checks each one against the candidate's other answers and their CV profile, and labels it contradiction, consistent, insufficient detail or not probed, every finding backed by quotes from both sides. LLM reasoning (Gemini or OpenRouter) is grounded in a meta-analytic table of verbal deception cues and audited before each report ships. By design there is no per-person lie score: research on the DOLOS dataset showed such scores sit at chance (AUC around 0.5), so the module works as a fact-checking editor that coaches the candidate instead.",
     "imageFolder": null,
-    "image": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80",
+    "image": null,
     "category": "AI",
-    "technologies": ["Python", "PyTorch", "Computer Vision", "NLP", "Multimodal AI"],
+    "technologies": ["Python", "FastAPI", "LLMs", "NLP", "NestJS", "Next.js"],
     "features": [
-      "Facial liveness detection and expression tracking",
-      "Real-time engagement analysis from video",
-      "Multi-stream orchestration (video, audio, text)",
-      "Adaptive interview question generation per user profile",
-      "Research collaboration with PT Sentra Vidya Utama"
+      "Claim extraction from typed answers or Whisper transcripts, with filler-word normalisation",
+      "Cross-checks every claim against the candidate's other answers and CV profile",
+      "Four statuses (contradiction, consistent, insufficient detail, not probed), each with two-sided quotes",
+      "LLM reasoning grounded in a meta-analytic effect-size table, plus a citation audit on every report",
+      "The model may soften a cross-check result but never sharpen it; parser-read CV lines never count as contradictions",
+      "Parallel per-claim calls under a configurable cost cap, with a deterministic fallback when the LLM fails",
+      "Coverage stated in every report, and no per-person lie score by design",
+      "Wired through the AI Gateway and NestJS backend into the results page, backed by 188 tests"
     ],
     "liveLink": null,
     "githubLink": null,

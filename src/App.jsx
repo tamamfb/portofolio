@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
@@ -5,15 +6,19 @@ import Landing from './pages/Landing';
 import About from './pages/About';
 import Projects from './pages/Projects';
 import CustomCursor from './components/CustomCursor';
-import bgImg from './assets/bg.png';
 import './styles/globals.css';
 
 function AppContent() {
   const location = useLocation();
   const isHome = location.pathname === '/';
 
+  // new page, start at the top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
-    <div className={`relative z-[1] text-[#2C3E50] flex flex-col font-[Fredoka] ${isHome ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
+    <div className="relative min-h-[100svh] flex flex-col text-ink font-sans">
       <CustomCursor />
       <Navigation />
       <main className="flex-grow flex flex-col">
@@ -23,6 +28,7 @@ function AppContent() {
           <Route path="/projects" element={<Projects />} />
         </Routes>
       </main>
+      {/* Home is a single screen; every other page ends on the doodle crew */}
       {!isHome && <Footer />}
     </div>
   );
@@ -30,21 +36,8 @@ function AppContent() {
 
 export default function App() {
   return (
-    <>
-      {/* Duck pattern — truly behind all content */}
-      <div
-        className="duck-bg fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          backgroundImage: `url(${bgImg})`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '100px 100px',
-          opacity: 0.1,
-        }}
-      />
-      <Router>
-        <AppContent />
-      </Router>
-    </>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
