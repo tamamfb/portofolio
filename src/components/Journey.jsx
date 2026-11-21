@@ -11,16 +11,50 @@ const LAYOUTS = {
   narrow: { vh: 330, minSpacing: 120, x0: 64, ys: [225, 140, 232, 135, 228, 140], stop: 42, road: 22, duck: 66, label: 150 },
 }
 
-function roadPath(pts, startX, endX) {
+// The road is a chain of cubic curves, one per stop. Sampling it once in JS gives the
+// length up to every stop and a cheap point lookup for the duck, instead of asking the
+// browser (getPointAtLength) thousands of times, which froze slow phones for seconds.
+function roadGeom(pts, startX, endX) {
   const seg = [[startX, pts[0][1] + 34], ...pts, [endX, pts[pts.length - 1][1] - 34]]
   let d = `M${seg[0][0]} ${seg[0][1]}`
+  const xs = [seg[0][0]]
+  const ys = [seg[0][1]]
+  const ls = [0]
+  const ends = [] // length at the end of each curve
+  const STEPS = 28
   for (let i = 0; i < seg.length - 1; i++) {
     const [ax, ay] = seg[i]
     const [bx, by] = seg[i + 1]
     const dx = (bx - ax) * 0.55
-    d += ` C${ax + dx} ${ay} ${bx - dx} ${by} ${bx} ${by}`
+    const c1x = ax + dx
+    const c2x = bx - dx
+    d += ` C${c1x} ${ay} ${c2x} ${by} ${bx} ${by}`
+    for (let k = 1; k <= STEPS; k++) {
+      const t = k / STEPS
+      const u = 1 - t
+      const x = u * u * u * ax + 3 * u * u * t * c1x + 3 * u * t * t * c2x + t * t * t * bx
+      const y = u * u * u * ay + 3 * u * u * t * ay + 3 * u * t * t * by + t * t * t * by
+      ls.push(ls[ls.length - 1] + Math.hypot(x - xs[xs.length - 1], y - ys[ys.length - 1]))
+      xs.push(x)
+      ys.push(y)
+    }
+    ends.push(ls[ls.length - 1])
   }
-  return d
+  const total = ls[ls.length - 1]
+  const pointAt = (l) => {
+    const v = Math.max(0, Math.min(total, l))
+    let lo = 0
+    let hi = ls.length - 1
+    while (hi - lo > 1) {
+      const m = (lo + hi) >> 1
+      if (ls[m] < v) lo = m
+      else hi = m
+    }
+    const f = (v - ls[lo]) / (ls[hi] - ls[lo] || 1)
+    return { x: xs[lo] + (xs[hi] - xs[lo]) * f, y: ys[lo] + (ys[hi] - ys[lo]) * f }
+  }
+  // stop i is the end of curve i (curve 0 runs from the road start to the first stop)
+  return { d, total, pointAt, stopL: pts.map((_, i) => ends[i]) }
 }
 
 function Scenery({ w, h, pts, narrow }) {
@@ -88,13 +122,12 @@ const Chevron = ({ dir }) => (
 export default function Journey({ stops }) {
   const frameRef = useRef(null)
   const viewRef = useRef(null)
-  const roadRef = useRef(null)
   const walkedRef = useRef(null)
   const duckRef = useRef(null)
   const duckFaceRef = useRef(null)
   const duckBodyRef = useRef(null)
   const drag = useRef(null)
-  const sim = useRef({ L: null, target: 0, lastPrint: 0, id: 0, stopL: [], total: 1 })
+  const sim = useRef({ L: null, target: 0, lastPrint: 0, id: 0 })
 
   const [frameW, setFrameW] = useState(0)
   const [active, setActive] = useState(0)
@@ -109,7 +142,8 @@ export default function Journey({ stops }) {
   const spacing = Math.max(L.minSpacing, frameW ? (frameW - 2 * L.x0) / (n - 1) : L.minSpacing)
   const trackW = Math.max(frameW, 2 * L.x0 + (n - 1) * spacing)
   const pts = useMemo(() => stops.map((_, i) => [L.x0 + i * spacing, L.ys[i % L.ys.length]]), [stops, L, spacing])
-  const d = useMemo(() => roadPath(pts, -40, trackW + 40), [pts, trackW])
+  const road = useMemo(() => roadGeom(pts, -40, trackW + 40), [pts, trackW])
+  const d = road.d
   const duckW = crewWidth('duck', L.duck)
   const mid = (Math.min(...L.ys) + Math.max(...L.ys)) / 2
 
@@ -121,24 +155,10 @@ export default function Journey({ stops }) {
     return () => ro.disconnect()
   }, [])
 
-  // where each stop sits along the road, so the duck can walk to it
-  useLayoutEffect(() => {
-    const path = roadRef.current
-    if (!path) return
-    const total = path.getTotalLength()
-    sim.current.total = total
-    sim.current.stopL = pts.map(([sx, sy]) => {
-      let best = 0
-      let bestD = Infinity
-      for (let l = 0; l <= total; l += 4) {
-        const p = path.getPointAtLength(l)
-        const dd = (p.x - sx) ** 2 + (p.y - sy) ** 2
-        if (dd < bestD) { bestD = dd; best = l }
-      }
-      return best
-    })
+  // a new road (resize, layout switch) puts the duck straight onto it
+  useEffect(() => {
     sim.current.L = null
-  }, [pts])
+  }, [road])
 
   const readScroll = useCallback(() => {
     const v = viewRef.current
@@ -149,27 +169,29 @@ export default function Journey({ stops }) {
   // the duck walks the road to the selected stop; the road it has covered gets coloured in
   useEffect(() => { sim.current.target = active }, [active])
   useEffect(() => {
-    const path = roadRef.current
-    if (!path) return
     const s = sim.current
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     let raf = 0
     let last = performance.now()
+    let drawn = null
     const frame = (now) => {
       raf = requestAnimationFrame(frame)
       const dt = Math.min(0.05, (now - last) / 1000)
       last = now
-      const goal = Math.max(0, (s.stopL[s.target] ?? 0) - L.stop * 1.05)
+      const goal = Math.max(0, (road.stopL[s.target] ?? 0) - L.stop * 1.05)
       if (s.L == null || reduced) s.L = goal
       const diff = goal - s.L
       const moving = Math.abs(diff) > 1
+      // idle: the duck is already where it should be, so touch nothing
+      if (!moving && drawn === s.L) return
       // quicker over long distances so a far jump never feels slow
       if (moving) s.L += Math.sign(diff) * Math.min(Math.abs(diff), Math.max(260, Math.abs(diff) * 2.2) * dt)
-      const p = path.getPointAtLength(s.L)
+      drawn = s.L
+      const p = road.pointAt(s.L)
       if (duckRef.current) duckRef.current.style.transform = `translate3d(${(p.x - duckW / 2).toFixed(1)}px, ${(p.y - L.duck + 12).toFixed(1)}px, 0)`
       if (duckFaceRef.current && moving) duckFaceRef.current.style.transform = `scaleX(${diff < 0 ? -1 : 1})`
       if (duckBodyRef.current) duckBodyRef.current.style.animationPlayState = moving ? 'running' : 'paused'
-      if (walkedRef.current) walkedRef.current.style.strokeDasharray = `${(s.L + L.stop).toFixed(1)} ${s.total}`
+      if (walkedRef.current) walkedRef.current.style.strokeDasharray = `${(s.L + L.stop).toFixed(1)} ${road.total + 100}`
       if (moving && Math.abs(s.L - s.lastPrint) > 22) {
         s.lastPrint = s.L
         const id = ++s.id
@@ -178,7 +200,7 @@ export default function Journey({ stops }) {
     }
     raf = requestAnimationFrame(frame)
     return () => cancelAnimationFrame(raf)
-  }, [d, duckW, L.duck, L.stop])
+  }, [road, duckW, L.duck, L.stop])
 
   const select = useCallback((i) => {
     const k = Math.max(0, Math.min(n - 1, i))
@@ -242,7 +264,7 @@ export default function Journey({ stops }) {
               <path d={d} fill="none" stroke="var(--ink)" strokeWidth={L.road + 5} strokeLinecap="round" />
               <path d={d} fill="none" stroke="#F2D9A0" strokeWidth={L.road} strokeLinecap="round" />
               <path ref={walkedRef} d={d} fill="none" stroke="#FFC93A" strokeWidth={L.road - 8} strokeLinecap="round" strokeDasharray="0 99999" />
-              <path ref={roadRef} d={d} fill="none" stroke="var(--ink)" strokeWidth="2" strokeDasharray="8 10" opacity=".45" />
+              <path d={d} fill="none" stroke="var(--ink)" strokeWidth="2" strokeDasharray="8 10" opacity=".45" />
             </svg>
 
             {prints.map((p) => (
